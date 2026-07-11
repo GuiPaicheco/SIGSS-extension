@@ -3,95 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <title>SIGSS+</title>
-  <link rel="stylesheet" href="popup.css">
+  <style>
+    body {
+      width: 280px;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f7fafc;
+      color: #2d3748;
+    }
+    .header {
+      background-color: #1a365d;
+      color: #ffffff;
+      padding: 12px 15px;
+      text-align: center;
+    }
+    .title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .subtitle {
+      font-size: 10px;
+      opacity: 0.8;
+      display: block;
+      margin-top: 2px;
+    }
+    .content {
+      padding: 15px;
+      text-align: center;
+    }
+    .status-badge {
+      display: inline-block;
+      background-color: #c6f6d5;
+      color: #22543d;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    .info-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #4a5568;
+      margin-bottom: 15px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      background-color: #1a365d;
+      color: #ffffff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      box-sizing: border-box;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #2b6cb0;
+    }
+  </style>
 </head>
 <body>
-  <header class="popup-header">
-    <h1 class="popup-title">SIGSS+</h1>
-    <span class="popup-subtitle">Extensão de Produtividade</span>
+  <header class="header">
+    <h1 class="title">SIGSS+</h1>
+    <span class="subtitle">Extensão de Produtividade</span>
   </header>
 
-  <nav class="popup-tabs">
-    <button class="tab-btn active" data-tab="tab-refresh">Atualização</button>
-    <button class="tab-btn" data-tab="tab-mappings">Mapeamentos</button>
-    <button class="tab-btn" data-tab="tab-about">Sobre</button>
-  </nav>
-
-  <main class="popup-content">
+  <main class="content">
+    <span class="status-badge">✓ EXTENSÃO ATIVA</span>
     
-    <!-- Aba Atualização -->
-    <section id="tab-refresh" class="tab-panel">
-      <div class="form-group">
-        <label for="select-interval" class="form-label">Intervalo de Atualização:</label>
-        <select id="select-interval" class="form-select">
-          <option value="disabled">Desativado</option>
-          <option value="5">5 segundos</option>
-          <option value="10">10 segundos</option>
-          <option value="15">15 segundos</option>
-          <option value="20">20 segundos</option>
-          <option value="30">30 segundos</option>
-          <option value="60">60 segundos</option>
-        </select>
-      </div>
+    <p class="info-text">
+      O painel lateral (Sidebar) foi <strong>incorporado diretamente</strong> à tela do SIGSS. 
+      Deslize a aba flutuante no lado direito da página para gerenciar mapeamentos e configurações.
+    </p>
 
-      <div class="checkbox-group">
-        <label class="checkbox-label">
-          <input type="checkbox" id="chk-active-only">
-          Atualizar apenas quando a aba estiver ativa
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" id="chk-prevent-form">
-          Não atualizar se houver formulário sendo preenchido
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" id="chk-sort-date">
-          Manter ordenação automática por Data Solicitação
-        </label>
-      </div>
-
-      <div class="action-divider"></div>
-      
-      <button id="btn-view-cache" class="btn btn-primary btn-block">
-        Visualizar Última Fila Salva (Offline)
-      </button>
-    </section>
-
-    <!-- Aba Mapeamentos -->
-    <section id="tab-mappings" class="tab-panel hidden">
-      <div class="mapping-info">
-        Associações capturadas automaticamente entre a Equipe ESF e o preenchimento de lançamentos:
-      </div>
-      <div id="mappings-list-container" class="mappings-list">
-        <!-- Lista de mapeamentos será preenchida via TS -->
-      </div>
-    </section>
-
-    <!-- Aba Sobre -->
-    <section id="tab-about" class="tab-panel hidden">
-      <div class="about-card">
-        <h3>SIGSS+ <span class="version">v1.0.0</span></h3>
-        <p class="about-text">
-          O <strong>SIGSS+</strong> é uma camada inteligente desenvolvida para rodar sobre o sistema SIGSS, 
-          adicionando automações e facilidades de cache sem alterar os dados ou o funcionamento original do sistema.
-        </p>
-        
-        <div class="about-meta">
-          <strong>Autor:</strong> Guilherme Paicheco Ferreira<br>
-          <em>Servidor Público • Prefeitura Municipal de Betim</em>
-        </div>
-
-        <div class="about-purpose">
-          O projeto foi criado voluntariamente com o objetivo de melhorar a produtividade e otimizar o fluxo de trabalho dos servidores da Atenção Primária à Saúde (APS) de Betim.
-        </div>
-        
-        <div class="about-contact">
-          Para contato ou sugestões futuras, envie uma mensagem para o autor ou coordenação do projeto.
-        </div>
-      </div>
-    </section>
-
+    <button id="btn-offline" class="btn">Visualizar Fila Offline</button>
   </main>
-
-  <script src="popup.js"></script>
 </body>
 </html>
+

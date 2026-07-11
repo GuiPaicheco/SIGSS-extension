@@ -46,7 +46,8 @@ class SIGSSPlusCore {
         break;
       case 'LAUNCH':
         await this.autoAssignmentModule.start();
-        console.log('SIGSS+: Módulo de Lançamento Automático iniciado.');
+        this.unifiedQueueModule.start();
+        console.log('SIGSS+: Módulo de Lançamento Automático e Painel Lateral iniciados.');
         break;
       default:
         console.log('SIGSS+: Nenhuma página de automação específica detectada.');

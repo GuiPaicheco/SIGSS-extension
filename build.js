@@ -36,8 +36,6 @@ function copyStaticFiles() {
   copyFileSync('src/manifest.json', 'dist/manifest.json');
   copyFileSync('src/ui/popup/popup.html', 'dist/popup.html');
   copyFileSync('src/ui/popup/popup.css', 'dist/popup.css');
-  copyFileSync('src/ui/options/options.html', 'dist/options.html');
-  copyFileSync('src/ui/options/options.css', 'dist/options.css');
   copyFileSync('src/ui/offline/offline_viewer.html', 'dist/offline_viewer.html');
   copyFileSync('src/ui/offline/offline_viewer.css', 'dist/offline_viewer.css');
   
@@ -57,7 +55,6 @@ async function build() {
       content: 'src/core/core.ts',
       background: 'src/background.ts',
       popup: 'src/ui/popup/popup.ts',
-      options: 'src/ui/options/options.ts',
       offline_viewer: 'src/ui/offline/offline_viewer.ts'
     },
     bundle: true,
@@ -85,8 +82,6 @@ async function build() {
       'src/manifest.json',
       'src/ui/popup/popup.html',
       'src/ui/popup/popup.css',
-      'src/ui/options/options.html',
-      'src/ui/options/options.css',
       'src/ui/offline/offline_viewer.html',
       'src/ui/offline/offline_viewer.css'
     ];
