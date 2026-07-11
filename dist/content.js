@@ -492,22 +492,27 @@
 
   // src/modules/queueCache/queueCache.ts
   var QueueCacheModule = class {
-    tableObserver = null;
-    debounceTimeoutId = null;
+    observedTables = /* @__PURE__ */ new Map();
+    checkIntervalId = null;
+    saveDebounceTimeoutId = null;
     start() {
       this.checkSystemAvailability();
-      this.captureAndSaveQueue();
-      this.setupTableObserver();
+      this.scanAndSetupObservers();
+      this.checkIntervalId = window.setInterval(() => {
+        this.scanAndSetupObservers();
+      }, 2e3);
     }
     stop() {
-      if (this.tableObserver) {
-        this.tableObserver.disconnect();
-        this.tableObserver = null;
+      if (this.checkIntervalId !== null) {
+        window.clearInterval(this.checkIntervalId);
+        this.checkIntervalId = null;
       }
-      if (this.debounceTimeoutId !== null) {
-        window.clearTimeout(this.debounceTimeoutId);
-        this.debounceTimeoutId = null;
+      if (this.saveDebounceTimeoutId !== null) {
+        window.clearTimeout(this.saveDebounceTimeoutId);
+        this.saveDebounceTimeoutId = null;
       }
+      this.observedTables.forEach((observer) => observer.disconnect());
+      this.observedTables.clear();
     }
     /**
      * Verifica se o corpo da página contém erros conhecidos do servidor
@@ -574,47 +579,75 @@
       }
     }
     /**
-     * Captura o HTML da tabela atual e salva no Chrome Storage local
+     * Varre o documento em busca de tabelas de filas e inicia sua observação
      */
-    captureAndSaveQueue() {
-      const tableHTML = SigssAdapter.getQueueTableHTML();
-      if (!tableHTML) {
-        return;
-      }
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = tableHTML;
-      const rows = tempDiv.querySelectorAll("tr");
-      if (rows.length <= 1) {
-        return;
-      }
-      ConfigManager.set({
-        lastQueueCache: {
-          html: tableHTML,
-          timestamp: Date.now()
+    scanAndSetupObservers() {
+      const selectors = SIGSS_SELECTORS.queueTable.split(",").map((s) => s.trim());
+      const customSelectors = ["#grid_transferencia_agenda", "#grid_acolhimentos", "#grid_busca"];
+      const allSelectors = Array.from(/* @__PURE__ */ new Set([...selectors, ...customSelectors]));
+      allSelectors.forEach((selector) => {
+        try {
+          const tables = document.querySelectorAll(selector);
+          tables.forEach((table) => {
+            if (table instanceof HTMLTableElement && !this.observedTables.has(table)) {
+              this.setupTableObserver(table);
+            }
+          });
+        } catch (err) {
         }
       });
     }
     /**
-     * Escuta alterações no DOM da tabela da fila para capturar o cache atualizado
+     * Configura o MutationObserver para uma tabela específica
      */
-    setupTableObserver() {
-      const table = document.querySelector(".gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table");
-      if (!table) return;
-      if (this.tableObserver) {
-        this.tableObserver.disconnect();
-      }
-      this.tableObserver = new MutationObserver(() => {
-        if (this.debounceTimeoutId !== null) {
-          window.clearTimeout(this.debounceTimeoutId);
+    setupTableObserver(table) {
+      const { key, name } = this.getQueueTypeAndName(table);
+      console.log(`SIGSS+: Monitorando tabela de fila "${name}" (ID: ${table.id || "N/A"})`);
+      const observer = new MutationObserver(() => {
+        if (this.saveDebounceTimeoutId !== null) {
+          window.clearTimeout(this.saveDebounceTimeoutId);
         }
-        this.debounceTimeoutId = window.setTimeout(() => {
-          this.captureAndSaveQueue();
+        this.saveDebounceTimeoutId = window.setTimeout(() => {
+          this.captureAndSaveSpecificQueue(table, key, name);
         }, 1e3);
       });
-      this.tableObserver.observe(table, {
+      observer.observe(table, {
         childList: true,
         subtree: true
       });
+      this.observedTables.set(table, observer);
+      this.captureAndSaveSpecificQueue(table, key, name);
+    }
+    /**
+     * Determina a chave e o nome da fila com base nos dados do elemento
+     */
+    getQueueTypeAndName(table) {
+      const id = table.id;
+      const url = window.location.href;
+      if (id === "grid_transferencia_agenda" || url.includes("atendimentoTriagemAgenda.jsp")) {
+        return { key: "atendimento", name: "Fila de Atendimento" };
+      }
+      if (id === "grid_acolhimentos" || url.includes("acolhimento") || url.includes("agendamentoTriagem.jsp")) {
+        return { key: "acolhimento", name: "Fila de Acolhimento" };
+      }
+      return { key: "fila", name: "Fila Geral" };
+    }
+    /**
+     * Limpa e salva os dados da tabela no Chrome Storage
+     */
+    async captureAndSaveSpecificQueue(table, key, name) {
+      if (table.rows.length <= 1) {
+        return;
+      }
+      const clone = table.cloneNode(true);
+      const cacheKey = `queueCache_${key}`;
+      const data = {
+        html: clone.outerHTML,
+        timestamp: Date.now(),
+        name
+      };
+      await chrome.storage.local.set({ [cacheKey]: data });
+      console.log(`SIGSS+: Fila "${name}" atualizada no cache local.`);
     }
   };
 
@@ -786,20 +819,20 @@
         this.clockModule.start();
         console.log("SIGSS+: M\xF3dulo de Rel\xF3gio sincronizado.");
       }
+      this.queueCacheModule.start();
       this.currentPage = SigssAdapter.detectCurrentPage();
       console.log(`SIGSS+: P\xE1gina atual detectada: ${this.currentPage}`);
       switch (this.currentPage) {
         case "QUEUE":
           await this.autoRefreshModule.start();
-          this.queueCacheModule.start();
-          console.log("SIGSS+: M\xF3dulos de Fila (Atualiza\xE7\xE3o Autom\xE1tica e Cache) iniciados.");
+          console.log("SIGSS+: M\xF3dulo de Fila (Atualiza\xE7\xE3o Autom\xE1tica) iniciado.");
           break;
         case "LAUNCH":
           await this.autoAssignmentModule.start();
           console.log("SIGSS+: M\xF3dulo de Lan\xE7amento Autom\xE1tico iniciado.");
           break;
         default:
-          console.log("SIGSS+: Nenhuma p\xE1gina automatizada detectada.");
+          console.log("SIGSS+: Nenhuma p\xE1gina de automa\xE7\xE3o espec\xEDfica detectada.");
           break;
       }
       this.setupConfigListener();

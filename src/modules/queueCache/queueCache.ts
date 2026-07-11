@@ -1,36 +1,44 @@
-import { SigssAdapter } from '../../utils/sigssAdapter';
+import { SigssAdapter, SIGSS_SELECTORS } from '../../utils/sigssAdapter';
 import { ConfigManager } from '../../core/config';
 
 /**
  * MÓDULO 3 - Cache Local
  * 
- * Captura e armazena localmente a última fila visualizada com sucesso.
+ * Captura e armazena localmente as últimas filas visualizadas com sucesso de forma segregada.
  * Monitora a disponibilidade do sistema para alertar o usuário e disponibiliza
  * um banner para visualizar o cache em caso de indisponibilidade do portal SIGSS.
  */
 export class QueueCacheModule {
-  private tableObserver: MutationObserver | null = null;
-  private debounceTimeoutId: number | null = null;
+  private observedTables = new Map<Element, MutationObserver>();
+  private checkIntervalId: number | null = null;
+  private saveDebounceTimeoutId: number | null = null;
 
   public start() {
     this.checkSystemAvailability();
     
-    // Captura inicial caso a página já tenha carregado com dados
-    this.captureAndSaveQueue();
+    // Varredura imediata para capturar tabelas presentes no carregamento
+    this.scanAndSetupObservers();
     
-    // Inicia o monitoramento da tabela de fila para atualizações
-    this.setupTableObserver();
+    // Varredura periódica a cada 2 segundos para interceptar tabelas geradas dinamicamente via AJAX tardio
+    this.checkIntervalId = window.setInterval(() => {
+      this.scanAndSetupObservers();
+    }, 2000);
   }
 
   public stop() {
-    if (this.tableObserver) {
-      this.tableObserver.disconnect();
-      this.tableObserver = null;
+    if (this.checkIntervalId !== null) {
+      window.clearInterval(this.checkIntervalId);
+      this.checkIntervalId = null;
     }
-    if (this.debounceTimeoutId !== null) {
-      window.clearTimeout(this.debounceTimeoutId);
-      this.debounceTimeoutId = null;
+
+    if (this.saveDebounceTimeoutId !== null) {
+      window.clearTimeout(this.saveDebounceTimeoutId);
+      this.saveDebounceTimeoutId = null;
     }
+
+    // Desconectar observadores ativos
+    this.observedTables.forEach(observer => observer.disconnect());
+    this.observedTables.clear();
   }
 
   /**
@@ -70,7 +78,6 @@ export class QueueCacheModule {
     const banner = document.createElement('div');
     banner.id = 'sigss-plus-offline-banner';
     
-    // Estilos do banner sóbrios e integrados
     banner.style.backgroundColor = '#fff3cd';
     banner.style.border = '1px solid #ffeeba';
     banner.style.color = '#856404';
@@ -90,7 +97,6 @@ export class QueueCacheModule {
       </a>.
     `;
 
-    // Inserir no topo da página
     const firstChild = document.body.firstChild;
     if (firstChild) {
       document.body.insertBefore(banner, firstChild);
@@ -108,59 +114,97 @@ export class QueueCacheModule {
   }
 
   /**
-   * Captura o HTML da tabela atual e salva no Chrome Storage local
+   * Varre o documento em busca de tabelas de filas e inicia sua observação
    */
-  private captureAndSaveQueue() {
-    const tableHTML = SigssAdapter.getQueueTableHTML();
-    if (!tableHTML) {
-      return;
-    }
-
-    // Não salvar se a tabela estiver visivelmente vazia de dados relevantes 
-    // (ex: apenas o cabeçalho sem nenhuma linha de conteúdo)
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = tableHTML;
-    const rows = tempDiv.querySelectorAll('tr');
+  private scanAndSetupObservers() {
+    // Dividir a string de seletores e remover espaços
+    const selectors = SIGSS_SELECTORS.queueTable.split(',').map(s => s.trim());
     
-    // Geralmente th ocupa 1 linha, se tiver <= 1 linha no total, está vazia
-    if (rows.length <= 1) {
-      return;
-    }
+    // Adicionar IDs específicos que possamos querer mapear
+    const customSelectors = ['#grid_transferencia_agenda', '#grid_acolhimentos', '#grid_busca'];
+    const allSelectors = Array.from(new Set([...selectors, ...customSelectors]));
 
-    ConfigManager.set({
-      lastQueueCache: {
-        html: tableHTML,
-        timestamp: Date.now()
+    allSelectors.forEach(selector => {
+      try {
+        const tables = document.querySelectorAll(selector);
+        tables.forEach(table => {
+          if (table instanceof HTMLTableElement && !this.observedTables.has(table)) {
+            this.setupTableObserver(table);
+          }
+        });
+      } catch (err) {
+        // Ignorar seletores inválidos de CSS como :contains em queries nativas
       }
     });
   }
 
   /**
-   * Escuta alterações no DOM da tabela da fila para capturar o cache atualizado
+   * Configura o MutationObserver para uma tabela específica
    */
-  private setupTableObserver() {
-    const table = document.querySelector('.gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table');
-    if (!table) return;
+  private setupTableObserver(table: HTMLTableElement) {
+    const { key, name } = this.getQueueTypeAndName(table);
+    console.log(`SIGSS+: Monitorando tabela de fila "${name}" (ID: ${table.id || 'N/A'})`);
 
-    if (this.tableObserver) {
-      this.tableObserver.disconnect();
-    }
-
-    this.tableObserver = new MutationObserver(() => {
-      if (this.debounceTimeoutId !== null) {
-        window.clearTimeout(this.debounceTimeoutId);
+    const observer = new MutationObserver(() => {
+      if (this.saveDebounceTimeoutId !== null) {
+        window.clearTimeout(this.saveDebounceTimeoutId);
       }
 
-      // Debounce de 1 segundo para aguardar que a renderização da tabela termine 
-      // antes de extrair o HTML
-      this.debounceTimeoutId = window.setTimeout(() => {
-        this.captureAndSaveQueue();
+      this.saveDebounceTimeoutId = window.setTimeout(() => {
+        this.captureAndSaveSpecificQueue(table, key, name);
       }, 1000);
     });
 
-    this.tableObserver.observe(table, {
+    observer.observe(table, {
       childList: true,
       subtree: true
     });
+
+    this.observedTables.set(table, observer);
+
+    // Salvar o estado inicial imediatamente
+    this.captureAndSaveSpecificQueue(table, key, name);
+  }
+
+  /**
+   * Determina a chave e o nome da fila com base nos dados do elemento
+   */
+  private getQueueTypeAndName(table: HTMLTableElement): { key: string; name: string } {
+    const id = table.id;
+    const url = window.location.href;
+
+    if (id === 'grid_transferencia_agenda' || url.includes('atendimentoTriagemAgenda.jsp')) {
+      return { key: 'atendimento', name: 'Fila de Atendimento' };
+    }
+
+    if (id === 'grid_acolhimentos' || url.includes('acolhimento') || url.includes('agendamentoTriagem.jsp')) {
+      return { key: 'acolhimento', name: 'Fila de Acolhimento' };
+    }
+
+    return { key: 'fila', name: 'Fila Geral' };
+  }
+
+  /**
+   * Limpa e salva os dados da tabela no Chrome Storage
+   */
+  private async captureAndSaveSpecificQueue(table: HTMLTableElement, key: string, name: string) {
+    if (table.rows.length <= 1) {
+      return;
+    }
+
+    // Clonar a tabela para manipular e limpar o HTML
+    const clone = table.cloneNode(true) as HTMLTableElement;
+    
+    // Remover colunas ou elementos interativos desnecessários se necessário
+    const cacheKey = `queueCache_${key}`;
+    const data = {
+      html: clone.outerHTML,
+      timestamp: Date.now(),
+      name: name
+    };
+
+    await chrome.storage.local.set({ [cacheKey]: data });
+    console.log(`SIGSS+: Fila "${name}" atualizada no cache local.`);
   }
 }
+

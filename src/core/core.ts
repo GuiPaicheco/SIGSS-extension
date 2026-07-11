@@ -29,6 +29,9 @@ class SIGSSPlusCore {
       console.log('SIGSS+: Módulo de Relógio sincronizado.');
     }
 
+    // Módulo de cache de filas é iniciado em 100% do tempo em qualquer tela
+    this.queueCacheModule.start();
+
     // Detectar página atual e inicializar módulos específicos
     this.currentPage = SigssAdapter.detectCurrentPage();
     console.log(`SIGSS+: Página atual detectada: ${this.currentPage}`);
@@ -36,17 +39,17 @@ class SIGSSPlusCore {
     switch (this.currentPage) {
       case 'QUEUE':
         await this.autoRefreshModule.start();
-        this.queueCacheModule.start();
-        console.log('SIGSS+: Módulos de Fila (Atualização Automática e Cache) iniciados.');
+        console.log('SIGSS+: Módulo de Fila (Atualização Automática) iniciado.');
         break;
       case 'LAUNCH':
         await this.autoAssignmentModule.start();
         console.log('SIGSS+: Módulo de Lançamento Automático iniciado.');
         break;
       default:
-        console.log('SIGSS+: Nenhuma página automatizada detectada.');
+        console.log('SIGSS+: Nenhuma página de automação específica detectada.');
         break;
     }
+
 
     // Registrar observador de mudanças nas configurações para refletir imediatamente
     this.setupConfigListener();

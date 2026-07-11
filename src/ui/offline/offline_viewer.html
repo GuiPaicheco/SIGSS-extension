@@ -26,21 +26,28 @@
     <div class="alert-banner">
       <span class="alert-icon">ℹ</span>
       <p class="alert-text">
-        Esta é uma visualização estática da última fila de atendimento capturada.
-        Este cache serve apenas para <strong>consulta</strong> e <strong>não permite edição</strong> de dados.
+        Esta é uma visualização estática das últimas filas de atendimento capturadas.
+        Use as abas abaixo para alternar entre as listas. Este cache serve apenas para <strong>consulta</strong> e <strong>não permite alteração</strong> de dados.
       </p>
     </div>
 
+    <div class="tabs-navigation">
+      <button class="tab-btn active" data-tab="atendimento">Fila de Atendimento</button>
+      <button class="tab-btn" data-tab="acolhimento">Fila de Acolhimento</button>
+      <button class="tab-btn" data-tab="fila">Fila Geral / Outras</button>
+    </div>
+
     <div id="no-cache-message" class="no-cache-card hidden">
-      <h2>Nenhum cache encontrado</h2>
-      <p>Não há nenhuma fila salva localmente ainda.</p>
-      <p class="subtext">A fila é salva de forma automática em segundo plano sempre que você atualiza ou visualiza a lista no portal do SIGSS.</p>
+      <h2>Nenhum cache encontrado para esta aba</h2>
+      <p>Não há nenhuma fila salva localmente para esta categoria ainda.</p>
+      <p class="subtext">A fila é salva de forma automática em segundo plano sempre que você visualiza a respectiva lista no portal do SIGSS.</p>
     </div>
 
     <div id="table-container" class="table-container">
       <!-- O HTML da tabela capturada será injetado aqui -->
     </div>
   </main>
+
 
   <footer class="footer">
     <p>SIGSS+ • Desenvolvido voluntariamente por Guilherme Paicheco Ferreira • Betim/MG</p>
