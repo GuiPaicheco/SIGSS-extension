@@ -230,3 +230,38 @@ body {
   z-index: 2;
 }
 
+/* Badges e Tabela da Fila Unificada */
+.uq-badge-risco {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 10px;
+  text-align: center;
+  width: 40px;
+}
+.uq-badge-risco.risco-ver { background-color: #e53e3e; color: #ffffff; }
+.uq-badge-risco.risco-lar { background-color: #dd6b20; color: #ffffff; }
+.uq-badge-risco.risco-ama { background-color: #ecc94b; color: #1a202c; }
+.uq-badge-risco.risco-verd { background-color: #48bb78; color: #ffffff; }
+.uq-badge-risco.risco-azu { background-color: #3182ce; color: #ffffff; }
+.uq-badge-risco.risco-nor { background-color: #a0aec0; color: #ffffff; }
+
+.uq-badge-prep {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #a0aec0;
+}
+.uq-badge-prep.preparado-true {
+  background-color: #48bb78;
+  box-shadow: 0 0 5px #48bb78;
+}
+
+.table-container table td.col-prioridade {
+  color: #718096;
+  font-style: italic;
+}
+
+

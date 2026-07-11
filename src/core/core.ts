@@ -3,6 +3,7 @@ import { ClockModule } from '../modules/clock/clock';
 import { AutoRefreshModule } from '../modules/autoRefresh/autoRefresh';
 import { QueueCacheModule } from '../modules/queueCache/queueCache';
 import { AutoAssignmentModule } from '../modules/autoAssignment/autoAssignment';
+import { UnifiedQueueModule } from '../modules/unifiedQueue/unifiedQueue';
 import { ConfigManager } from './config';
 
 /**
@@ -17,6 +18,7 @@ class SIGSSPlusCore {
   private autoRefreshModule = new AutoRefreshModule();
   private queueCacheModule = new QueueCacheModule();
   private autoAssignmentModule = new AutoAssignmentModule();
+  private unifiedQueueModule = new UnifiedQueueModule();
 
   private currentPage: 'QUEUE' | 'LAUNCH' | 'UNKNOWN' = 'UNKNOWN';
 
@@ -39,7 +41,8 @@ class SIGSSPlusCore {
     switch (this.currentPage) {
       case 'QUEUE':
         await this.autoRefreshModule.start();
-        console.log('SIGSS+: Módulo de Fila (Atualização Automática) iniciado.');
+        this.unifiedQueueModule.start();
+        console.log('SIGSS+: Módulos de Fila (Atualização Automática e Fila Unificada) iniciados.');
         break;
       case 'LAUNCH':
         await this.autoAssignmentModule.start();
@@ -49,6 +52,7 @@ class SIGSSPlusCore {
         console.log('SIGSS+: Nenhuma página de automação específica detectada.');
         break;
     }
+
 
 
     // Registrar observador de mudanças nas configurações para refletir imediatamente
