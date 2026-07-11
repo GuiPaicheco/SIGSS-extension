@@ -3,22 +3,22 @@
   // src/utils/sigssAdapter.ts
   var SIGSS_SELECTORS = {
     // Cabeçalho / Relógio
-    clockContainer: "#relogio, .relogio, #clock, .hora-sistema, #cabecalho_hora",
-    // Fila de Espera / Busca
-    searchButton: 'input[value="Buscar"], button:has-text("Buscar"), #btnBuscar, .btn-buscar, input[name="btnBuscar"]',
-    queueTable: ".gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table",
-    queueTableHeaders: ".gridFila th, #tabelaFila th, table.grid th",
+    clockContainer: "#horaAtual, #relogio, .relogio, #clock, .hora-sistema, #cabecalho_hora",
+    // Fila de Espera / Busca (jqGrid / AJAX)
+    searchButton: '#btnBuscar, input[value="Buscar"], button:has-text("Buscar"), .btn-buscar, input[name="btnBuscar"]',
+    queueTable: "#grid_transferencia_agenda, .ui-jqgrid-btable, .gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table",
+    queueTableHeaders: ".ui-jqgrid-htable th, tr.ui-jqgrid-labels th, .gridFila th, #tabelaFila th, table.grid th",
     // Indicadores de Formulário
     textInputs: 'input[type="text"], input[type="search"], textarea',
     selects: "select",
     // Detalhes do Lançamento
     patientEsfText: '.esf-paciente, td:contains("ESF"), td:contains("Equipe"), label:contains("ESF")',
     // Campos de seleção de Profissional / Equipe / CBO
-    profissionalSelect: 'select[name*="profissional"], select[name*="Profissional"], select[id*="profissional"], #cd_profissional',
-    equipeSelect: 'select[name*="equipe"], select[name*="Equipe"], select[id*="equipe"], #cd_equipe',
-    cboSelect: 'select[name*="cbo"], select[name*="CBO"], select[name*="ocupacao"], #cd_cbo, #cd_ocupacao',
+    profissionalSelect: 'select[id="agtr.profissional.prsaPK"]',
+    equipeSelect: 'select[id="agtr.equipe.equiPK"]',
+    cboSelect: 'select[id="agtr.atividadeProfissionalCnes.apcnId"]',
     // Container de Ações onde o botão de captura será injetado
-    actionsContainer: ".botoes-acao, .barra-botoes, td.botoes, #divBotoes, .form-actions"
+    actionsContainer: "#divBotoes, .botoes-acao, .barra-botoes, td.botoes, .form-actions"
   };
   var SigssAdapter = class {
     /**
@@ -26,7 +26,7 @@
      */
     static detectCurrentPage() {
       const url = window.location.href;
-      if (url.includes("fila") || url.includes("pesquisa") || url.includes("consultar") || url.includes("mock_sigss.html")) {
+      if (url.includes("fila") || url.includes("pesquisa") || url.includes("consultar") || url.includes("agendamentoTriagem.jsp") || url.includes("mock_sigss.html")) {
         if (this.getSearchButton() || document.querySelector(SIGSS_SELECTORS.queueTable)) {
           return "QUEUE";
         }
@@ -79,10 +79,9 @@
      */
     static getSearchButton() {
       const selectors = [
+        "#btnBuscar",
         'input[value="Buscar"]',
         'input[value="Pesquisar"]',
-        "button#btnBuscar",
-        "#btnBuscar",
         'input[name="btnBuscar"]',
         ".btn-buscar",
         'input[type="button"][value*="Buscar"]',
@@ -168,11 +167,27 @@
     }
     /**
      * Tenta identificar o código ESF do paciente na página de lançamento.
-     * Geralmente exibido como um texto descritivo. Ex: "Equipe ESF: 086" ou "Equipe de Saúde da Família: 086"
+     * Realiza buscas no dropdown Chosen do paciente, nas opções selecionadas e no texto da página.
      */
     static getPatientEsf() {
+      const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia|INE)[:\-\s#\b]+(\d+)/i;
+      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]');
+      if (patientSelect && patientSelect.selectedIndex >= 0) {
+        const selectedText = patientSelect.options[patientSelect.selectedIndex]?.text || "";
+        const match = selectedText.match(regexEsf);
+        if (match && match[1]) {
+          return match[1].trim();
+        }
+      }
+      const chosenSpan = document.querySelector("#agtr_usuarioServico_isenPK_chzn .chzn-single span");
+      if (chosenSpan) {
+        const chosenText = chosenSpan.textContent || "";
+        const match = chosenText.match(regexEsf);
+        if (match && match[1]) {
+          return match[1].trim();
+        }
+      }
       const esfElements = document.querySelectorAll(SIGSS_SELECTORS.patientEsfText);
-      const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia)[:\-\s#\b]+(\d+)/i;
       for (let i = 0; i < esfElements.length; i++) {
         const text = esfElements[i].textContent || "";
         const match = text.match(regexEsf);
@@ -185,14 +200,6 @@
       if (bodyMatch && bodyMatch[1]) {
         return bodyMatch[1].trim();
       }
-      const tdList = document.querySelectorAll("td, th, span, div");
-      for (let i = 0; i < tdList.length; i++) {
-        const text = tdList[i].textContent || "";
-        if (text.includes("ESF") || text.includes("Equipe ESF")) {
-          const match = text.match(/\b\d{2,4}\b/);
-          if (match) return match[0];
-        }
-      }
       return null;
     }
     /**
@@ -204,6 +211,28 @@
         equipeSelect: document.querySelector(SIGSS_SELECTORS.equipeSelect),
         cboSelect: document.querySelector(SIGSS_SELECTORS.cboSelect)
       };
+    }
+    /**
+     * Define o valor de um select e força a atualização do plugin jQuery Chosen
+     * injetando um script temporário no contexto da página.
+     */
+    static setSelectValueAndTrigger(selector, value) {
+      const scriptContent = `
+      (function() {
+        const select = document.querySelector('${selector}');
+        if (select) {
+          select.value = '${value}';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          if (window.jQuery) {
+            window.jQuery(select).trigger('chosen:updated');
+          }
+        }
+      })();
+    `;
+      const script = document.createElement("script");
+      script.textContent = scriptContent;
+      (document.head || document.documentElement).appendChild(script);
+      script.remove();
     }
     /**
      * Injeta o botão "Capturar Configuração" no formulário do SIGSS
@@ -623,19 +652,16 @@
         return;
       }
       console.log(`SIGSS+: Iniciando preenchimento autom\xE1tico para ESF ${esfCode}...`);
-      if (profissionalSelect && mapping.profissionalId) {
-        profissionalSelect.value = mapping.profissionalId;
-        profissionalSelect.dispatchEvent(new Event("change", { bubbles: true }));
+      if (mapping.profissionalId) {
+        SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.profissionalSelect, mapping.profissionalId);
       }
       setTimeout(() => {
-        if (equipeSelect && mapping.equipeId) {
-          equipeSelect.value = mapping.equipeId;
-          equipeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        if (mapping.equipeId) {
+          SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.equipeSelect, mapping.equipeId);
         }
         setTimeout(() => {
-          if (cboSelect && mapping.cboId) {
-            cboSelect.value = mapping.cboId;
-            cboSelect.dispatchEvent(new Event("change", { bubbles: true }));
+          if (mapping.cboId) {
+            SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.cboSelect, mapping.cboId);
           }
           console.log("SIGSS+: Lan\xE7amento preenchido automaticamente.");
         }, 300);

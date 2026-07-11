@@ -17,12 +17,12 @@ export interface LaunchFields {
 
 export const SIGSS_SELECTORS = {
   // Cabeçalho / Relógio
-  clockContainer: '#relogio, .relogio, #clock, .hora-sistema, #cabecalho_hora',
+  clockContainer: '#horaAtual, #relogio, .relogio, #clock, .hora-sistema, #cabecalho_hora',
   
-  // Fila de Espera / Busca
-  searchButton: 'input[value="Buscar"], button:has-text("Buscar"), #btnBuscar, .btn-buscar, input[name="btnBuscar"]',
-  queueTable: '.gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table',
-  queueTableHeaders: '.gridFila th, #tabelaFila th, table.grid th',
+  // Fila de Espera / Busca (jqGrid / AJAX)
+  searchButton: '#btnBuscar, input[value="Buscar"], button:has-text("Buscar"), .btn-buscar, input[name="btnBuscar"]',
+  queueTable: '#grid_transferencia_agenda, .ui-jqgrid-btable, .gridFila, #tabelaFila, #gridSolicitacoes, table.grid, .tabela-dados table',
+  queueTableHeaders: '.ui-jqgrid-htable th, tr.ui-jqgrid-labels th, .gridFila th, #tabelaFila th, table.grid th',
   
   // Indicadores de Formulário
   textInputs: 'input[type="text"], input[type="search"], textarea',
@@ -32,12 +32,12 @@ export const SIGSS_SELECTORS = {
   patientEsfText: '.esf-paciente, td:contains("ESF"), td:contains("Equipe"), label:contains("ESF")',
   
   // Campos de seleção de Profissional / Equipe / CBO
-  profissionalSelect: 'select[name*="profissional"], select[name*="Profissional"], select[id*="profissional"], #cd_profissional',
-  equipeSelect: 'select[name*="equipe"], select[name*="Equipe"], select[id*="equipe"], #cd_equipe',
-  cboSelect: 'select[name*="cbo"], select[name*="CBO"], select[name*="ocupacao"], #cd_cbo, #cd_ocupacao',
+  profissionalSelect: 'select[id="agtr.profissional.prsaPK"]',
+  equipeSelect: 'select[id="agtr.equipe.equiPK"]',
+  cboSelect: 'select[id="agtr.atividadeProfissionalCnes.apcnId"]',
   
   // Container de Ações onde o botão de captura será injetado
-  actionsContainer: '.botoes-acao, .barra-botoes, td.botoes, #divBotoes, .form-actions'
+  actionsContainer: '#divBotoes, .botoes-acao, .barra-botoes, td.botoes, .form-actions'
 };
 
 export class SigssAdapter {
@@ -49,22 +49,20 @@ export class SigssAdapter {
     const url = window.location.href;
     
     // Verificações baseadas em URL
-    if (url.includes('fila') || url.includes('pesquisa') || url.includes('consultar') || url.includes('mock_sigss.html')) {
-      // Confirmar se existe uma tabela ou botão de buscar na página
+    if (url.includes('fila') || url.includes('pesquisa') || url.includes('consultar') || url.includes('agendamentoTriagem.jsp') || url.includes('mock_sigss.html')) {
       if (this.getSearchButton() || document.querySelector(SIGSS_SELECTORS.queueTable)) {
         return 'QUEUE';
       }
     }
     
     if (url.includes('lancamento') || url.includes('atendimento') || url.includes('gravar') || url.includes('mock_sigss_launch.html')) {
-      // Confirmar se possui os selects de profissional/equipe
       const fields = this.getLaunchFields();
       if (fields.profissionalSelect || fields.equipeSelect) {
         return 'LAUNCH';
       }
     }
 
-    // Fallback estrutural se as URLs não forem claras
+    // Fallback estrutural
     if (document.querySelector(SIGSS_SELECTORS.queueTable)) {
       return 'QUEUE';
     }
@@ -81,18 +79,15 @@ export class SigssAdapter {
    * Obtém o elemento HTML do cabeçalho que exibe o relógio
    */
   static getClockElement(): HTMLElement | null {
-    // 1. Tentar o seletor padrão
     let el = document.querySelector(SIGSS_SELECTORS.clockContainer) as HTMLElement;
     if (el) return el;
 
-    // 2. Fallback: procurar por textos no formato HH:MM:SS no cabeçalho/topo do documento
     const walker = document.createTreeWalker(
       document.body,
       NodeFilter.SHOW_TEXT,
       {
         acceptNode: (node) => {
           const text = node.textContent || '';
-          // Limitar busca ao topo ou elementos de cabeçalho comuns
           const parent = node.parentElement;
           if (parent && (parent.tagName === 'SPAN' || parent.tagName === 'DIV' || parent.tagName === 'TD')) {
             if (/^\d{2}:\d{2}(:\d{2})?$/.test(text.trim())) {
@@ -116,12 +111,10 @@ export class SigssAdapter {
    * Obtém o botão de busca da fila de atendimento
    */
   static getSearchButton(): HTMLButtonElement | HTMLInputElement | null {
-    // Tentar seletores conhecidos
     const selectors = [
+      '#btnBuscar',
       'input[value="Buscar"]',
       'input[value="Pesquisar"]',
-      'button#btnBuscar',
-      '#btnBuscar',
       'input[name="btnBuscar"]',
       '.btn-buscar',
       'input[type="button"][value*="Buscar"]',
@@ -133,7 +126,6 @@ export class SigssAdapter {
       if (btn) return btn as HTMLButtonElement | HTMLInputElement;
     }
 
-    // Busca heurística por texto nos botões
     const buttons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
@@ -155,7 +147,6 @@ export class SigssAdapter {
 
     const tagName = activeEl.tagName.toLowerCase();
     
-    // Se o elemento ativo for um campo de entrada de texto
     if (tagName === 'textarea') {
       const txt = activeEl as HTMLTextAreaElement;
       return txt.value.trim().length > 0;
@@ -169,11 +160,9 @@ export class SigssAdapter {
       }
     }
 
-    // Heurística de formulário geral: verificar se há qualquer campo de texto com conteúdo preenchido pelo usuário
     const textInputs = document.querySelectorAll(SIGSS_SELECTORS.textInputs);
     for (let i = 0; i < textInputs.length; i++) {
       const input = textInputs[i] as HTMLInputElement | HTMLTextAreaElement;
-      // Se o input foi modificado e não está vazio
       if (input === document.activeElement && input.value.trim().length > 0) {
         return true;
       }
@@ -190,18 +179,10 @@ export class SigssAdapter {
     for (let i = 0; i < headers.length; i++) {
       const header = headers[i] as HTMLElement;
       if (header.textContent?.trim().toLowerCase().includes(columnName.toLowerCase())) {
-        // Verificar se já está ordenado (geralmente há alguma classe como 'sort-asc', 'sort-desc', ou seta ▲/▼ no HTML)
         const hasSortIndicator = header.querySelector('.sort-indicator, .fa-sort, .seta') || 
                                  header.className.includes('sort') || 
                                  header.textContent.includes('▲') || 
                                  header.textContent.includes('▼');
-        
-        // Se já parece estar ordenado, evitamos cliques em loop. Caso contrário, ou para garantir, clicamos.
-        // Como o requisito é "manter automaticamente a ordenação por Data Solicitação quando existir",
-        // idealmente clicamos se detectarmos que a ordenação não está ativa ou se o usuário explicitou.
-        // Vamos expor o header para que o módulo gerencie a ordenação.
-        
-        // Retornamos true se o header foi encontrado. O módulo decidirá o clique baseado no estado.
         return true;
       }
     }
@@ -214,11 +195,9 @@ export class SigssAdapter {
   static getQueueTableHTML(): string | null {
     const table = document.querySelector(SIGSS_SELECTORS.queueTable);
     if (table) {
-      // Retorna uma cópia limpa do HTML da tabela
       return table.outerHTML;
     }
     
-    // Heurística: procurar a tabela maior na página que tenha mais de 3 linhas
     const tables = document.querySelectorAll('table');
     let bestTable: HTMLTableElement | null = null;
     let maxRows = 0;
@@ -240,39 +219,46 @@ export class SigssAdapter {
 
   /**
    * Tenta identificar o código ESF do paciente na página de lançamento.
-   * Geralmente exibido como um texto descritivo. Ex: "Equipe ESF: 086" ou "Equipe de Saúde da Família: 086"
+   * Realiza buscas no dropdown Chosen do paciente, nas opções selecionadas e no texto da página.
    */
   static getPatientEsf(): string | null {
-    // 1. Procurar em elementos específicos
-    const esfElements = document.querySelectorAll(SIGSS_SELECTORS.patientEsfText);
-    const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia)[:\-\s#\b]+(\d+)/i;
+    const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia|INE)[:\-\s#\b]+(\d+)/i;
 
-    for (let i = 0; i < esfElements.length; i++) {
-      const text = esfElements[i].textContent || '';
-      const match = text.match(regexEsf);
+    // 1. Tentar ler do texto da opção selecionada do dropdown do paciente
+    const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') as HTMLSelectElement | null;
+    if (patientSelect && patientSelect.selectedIndex >= 0) {
+      const selectedText = patientSelect.options[patientSelect.selectedIndex]?.text || '';
+      const match = selectedText.match(regexEsf);
       if (match && match[1]) {
-        // Retorna o código limpo (ex: "086")
         return match[1].trim();
       }
     }
 
-    // 2. Varredura completa do corpo do documento por textos que combinam com o padrão
+    // 2. Tentar ler do container Chosen ativo que exibe o nome do paciente selecionado
+    const chosenSpan = document.querySelector('#agtr_usuarioServico_isenPK_chzn .chzn-single span');
+    if (chosenSpan) {
+      const chosenText = chosenSpan.textContent || '';
+      const match = chosenText.match(regexEsf);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+
+    // 3. Procurar em elementos específicos de texto ou labels de ESF
+    const esfElements = document.querySelectorAll(SIGSS_SELECTORS.patientEsfText);
+    for (let i = 0; i < esfElements.length; i++) {
+      const text = esfElements[i].textContent || '';
+      const match = text.match(regexEsf);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+
+    // 4. Varredura completa do corpo do documento
     const bodyText = document.body.innerText;
     const bodyMatch = bodyText.match(regexEsf);
     if (bodyMatch && bodyMatch[1]) {
       return bodyMatch[1].trim();
-    }
-
-    // 3. Fallback: procurar por tabelas de informações do paciente
-    // (Por exemplo, uma célula contendo a palavra ESF e a célula ao lado contendo o número)
-    const tdList = document.querySelectorAll('td, th, span, div');
-    for (let i = 0; i < tdList.length; i++) {
-      const text = tdList[i].textContent || '';
-      if (text.includes('ESF') || text.includes('Equipe ESF')) {
-        // Verificar o elemento irmão ou pai
-        const match = text.match(/\b\d{2,4}\b/);
-        if (match) return match[0];
-      }
     }
 
     return null;
@@ -290,17 +276,38 @@ export class SigssAdapter {
   }
 
   /**
+   * Define o valor de um select e força a atualização do plugin jQuery Chosen
+   * injetando um script temporário no contexto da página.
+   */
+  static setSelectValueAndTrigger(selector: string, value: string) {
+    const scriptContent = `
+      (function() {
+        const select = document.querySelector('${selector}');
+        if (select) {
+          select.value = '${value}';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          if (window.jQuery) {
+            window.jQuery(select).trigger('chosen:updated');
+          }
+        }
+      })();
+    `;
+    const script = document.createElement('script');
+    script.textContent = scriptContent;
+    (document.head || document.documentElement).appendChild(script);
+    script.remove();
+  }
+
+  /**
    * Injeta o botão "Capturar Configuração" no formulário do SIGSS
    */
   static injectCaptureButton(onCapture: () => void): boolean {
-    // Impedir injeção duplicada
     if (document.getElementById('sigss-plus-capture-btn')) {
       return true;
     }
 
     const container = document.querySelector(SIGSS_SELECTORS.actionsContainer);
     if (!container) {
-      // Tentar encontrar qualquer lugar próximo a botões de "Gravar" ou "Salvar"
       const buttons = document.querySelectorAll('input[type="submit"], input[value*="Gravar"], button');
       let targetButton: Element | null = null;
       for (let i = 0; i < buttons.length; i++) {
@@ -316,7 +323,6 @@ export class SigssAdapter {
         return true;
       }
 
-      // Se falhar tudo, injetar no final do body como um botão flutuante discreto
       const bodyContainer = document.body;
       if (bodyContainer) {
         this.createAndInjectButton(bodyContainer, onCapture, true);
@@ -339,8 +345,6 @@ export class SigssAdapter {
     btn.type = 'button';
     btn.textContent = 'Capturar Configuração';
     
-    // Aplicar estilos para se misturar ao SIGSS de forma nativa e profissional
-    // Sem cores vibrantes, mantendo a sobriedade do sistema (cinza/azul discreto)
     if (isFloating) {
       btn.style.position = 'fixed';
       btn.style.bottom = '20px';
@@ -362,7 +366,6 @@ export class SigssAdapter {
     btn.style.display = 'inline-flex';
     btn.style.alignItems = 'center';
 
-    // Hover discreto
     btn.addEventListener('mouseenter', () => {
       btn.style.backgroundColor = '#e0e0e0';
       btn.style.borderColor = '#999';
@@ -380,3 +383,4 @@ export class SigssAdapter {
     parent.appendChild(btn);
   }
 }
+

@@ -1,4 +1,4 @@
-import { SigssAdapter } from '../../utils/sigssAdapter';
+import { SigssAdapter, SIGSS_SELECTORS } from '../../utils/sigssAdapter';
 import { ConfigManager, EsfMapping } from '../../core/config';
 
 /**
@@ -58,29 +58,27 @@ export class AutoAssignmentModule {
 
     console.log(`SIGSS+: Iniciando preenchimento automático para ESF ${esfCode}...`);
 
-    // Passo 1: Preencher Profissional e disparar evento
-    if (profissionalSelect && mapping.profissionalId) {
-      profissionalSelect.value = mapping.profissionalId;
-      profissionalSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    // Passo 1: Preencher Profissional
+    if (mapping.profissionalId) {
+      SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.profissionalSelect, mapping.profissionalId);
     }
 
     // Passo 2: Aguardar 300ms para preencher a Equipe
     setTimeout(() => {
-      if (equipeSelect && mapping.equipeId) {
-        equipeSelect.value = mapping.equipeId;
-        equipeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+      if (mapping.equipeId) {
+        SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.equipeSelect, mapping.equipeId);
       }
 
       // Passo 3: Aguardar mais 300ms para preencher o CBO
       setTimeout(() => {
-        if (cboSelect && mapping.cboId) {
-          cboSelect.value = mapping.cboId;
-          cboSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        if (mapping.cboId) {
+          SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.cboSelect, mapping.cboId);
         }
         console.log('SIGSS+: Lançamento preenchido automaticamente.');
       }, 300);
     }, 300);
   }
+
 
   /**
    * Injeta o botão de Captura e configura seu evento

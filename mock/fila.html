@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <title>SIGSS | Sistema Integrado de Gestão de Serviços de Saúde</title>
+        <link type="image/x-icon" rel="shortcut icon" href="http://sigss.betim.mg.gov.br/sigss/img/iconLogoMv.png">
+        <meta name="description" content="SIGSS | Sistema Integrado de Gestão de Serviços de Saúde">
+        <meta name="keywords" content="consulfarma, sigss, mv">
+
+        
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+        <meta http-equiv="Expires" content="Wed, 31 Dec 1969 21:00:00 GMT">
+        <meta http-equiv="Pragma" content="no-cache">
+
+        
+
+        <link type="text/css" href="./fila_files/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/ui.jqgrid.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/ui.checkbox.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/chosen.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/thickbox.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/jquery.dialog.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/jquerytools.validators.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/touch.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/colpick.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/sigss.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/style.css" rel="stylesheet">
+        <link type="text/css" href="./fila_files/iframeModal.css" rel="stylesheet">
+
+        
+
+        
+            
+
+<script type="text/javascript" src="./fila_files/all.compact.js.download"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+    
+
+<script type="text/javascript" src="./fila_files/cryptoUtil.js.download"></script>
+	<link type="text/css" href="./fila_files/atendimentoTriagem.css" rel="stylesheet">
+	<script type="text/javascript" src="./fila_files/atendimentoTriagem.js.download"></script>
+    <script type="text/javascript" src="./fila_files/impactAPI.js.download"></script>
+
+
+    <link type="text/css" href="./fila_files/atendimentoTriagem.css" rel="stylesheet">
+    <script type="text/javascript" src="./fila_files/manchester.js.download"></script>
+
+    <link type="text/css" href="./fila_files/reguaDor.css" rel="stylesheet">
+    <script type="text/javascript" src="./fila_files/reguaDor.js.download"></script>
+
+
+        
+        <script type="text/javascript">
+            DATA_ATUAL_SERVIDOR = "10/07/2026";
+            HORA_ATUAL_SERVIDOR = "21:24";
+            CONFIG.isUtilizaCAS = true;
+
+            CONFIG.urlBi = "";
+
+            const validaUrl = function (){
+            	if(!CONFIG.urlBi){
+            		infoDialog('Não existe URL configurada para o painel de indicadores.')
+            	}else if(!CONFIG.urlBi.startsWith('http')){
+            	    infoDialog('URL configurada para painel de indicadores não começa com o padrão http ou https.')
+            	} else{
+            	    window.location.href = CONFIG.urlBi;
+            	}
+            }
+
+            habilitaMenu('menu_bi', 'MENU_BI');
+
+            
+        </script>
+
+        
+
+            <script type="text/javascript">
+                if (CONFIG) {
+                    CONFIG.isConsorcio = 'f' == 't';
+                    CONFIG.isDemo = 'f' == 't';
+                }
+            </script>
+        
+    </head>
+
+    <body class="layout-column" novalidate="novalidate" style="">
+        
+            
+
+<div class="load-ajax" style="display: none;">
+	<div class="load-mask"></div>
+	<div class="pep-loading"></div>
+</div>
+
+<div class="load-ajax-biometria">
+	<div class="load-mask-biometria"></div>
+	<div class="load-biometria">
+		<span id="buscando">Buscando .</span> 
+		<img class="waitMv" src="./fila_files/logoMV.png">
+	</div>
+</div>
+
+
+<div class="load-progressbar">
+	<div class="layout-column">
+		<div class="load-mask"></div>
+		<div id="progressbar">
+			<div class="progress-label">Calculando...</div>
+		</div>
+		<div id="div-titulo-bar">
+			<label id="lbl-titulo-bar"></label>
+		</div>
+	</div>
+</div>
+        
+
+        <img src="./fila_files/background" id="background" class="fundo noPrint" onerror="this.style.display=&#39;none&#39;" style="display: none;">
+
+        <header class="sigss-viewport-header ">
+            <button class="sigss-button sigss-viewport-handler full-height">
+                <div class="menu-icon-nav sigss-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+            <div class="layout-flex"></div>
+
+            <div id="system-info" class="layout-column sigss-container--end">
+                <div class="layout-row">
+                    <span>
+                        GUILHERME.PAICHECO -
+                        GUILHERME PAICHECO FERREIRA
+                    </span>
+                    <span class="spacer">|</span>
+                    <span>BETIM - UBS PETROVALE</span>
+                </div>
+                <div class="layout-row">
+                    <span>MV</span>
+                    <span class="spacer">|</span>
+                    <span>SIGSS</span>
+                    <span class="spacer">|</span>
+                    <span>18.28.3</span>
+                    <span class="spacer">|</span>
+                    <span id="horaAtual">10/07/2026 21:24:44</span>
+                </div>
+
+            </div>
+
+            <div class="layout-row sigss-container--center full-height">
+
+                <div id="menu_bi" class="full-height sigss-oculta">
+                    <i title="B.I." class="sigss-button mv-basico" onclick="validaUrl(this)">grafico</i>
+                </div>
+
+                <i title="Menu Touch Screen" class="sigss-button mv-basico" onclick="abrirMenu()">touch</i>
+
+                
+
+                <a href="http://sigss.betim.mg.gov.br/sigss/correioInterno.jsp">
+                    <i title="Correio Interno" class="sigss-button mv-basico">mensagem
+                        <span class="notify" style="display: none;"></span>
+                    </i>
+                </a>
+
+                <a href="http://sigss.betim.mg.gov.br/sigss">
+                    <i title="Página inicial" class="sigss-button mv-basico">casa</i>
+                </a>
+
+                <a href="http://sigss.betim.mg.gov.br/sigss/pontoAcesso.jsp" class="sigss-container--center">
+                    <i title="Trocar ponto de acesso" class="sigss-button mv-basico">chave</i>
+                </a>
+
+                <i title="Sair" class="sigss-button confirmation shakeLogout mv-basico">ligar_desligar</i>
+            </div>
+        </header>
+        <div class="sigss-viewport-warnings"></div>
+        <div id="viewport-wrapper" class="sigss-viewport-wrapper layout-flex layout-row">
+            <nav class="sigss-viewport-navigation layout-column">
+                <div class="sigss-viewport-navigation__header">
+                    <div class="sigss-input-container sigss-viewport-search">
+                        <input id="inputSearch" type="text" placeholder="Digite para pesquisar...">
+                    </div>
+                </div>
+                <div class="sigss-viewport-navigation__content layout-flex"><div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler" style="display: flex; align-items: flex-end;"><i class="mv-hosp dp36" style="margin-right: 5px;">estetoscopio</i><span>Atendimento</span></button><div class="sigss-navigation-group__items"><div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Agendamentos</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Acolhimento/Agendamento de Triagem" href="http://sigss.betim.mg.gov.br/sigss/agendamentoTriagem.jsp"><i class="mv-basico dp18">tag</i><span>Acolhimento/Agendamento de Triagem</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Acolhimento/Atendimento de Triagem" href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp"><i class="mv-basico dp18">tag</i><span>Acolhimento/Atendimento de Triagem</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Atendimento Consulta" href="http://sigss.betim.mg.gov.br/sigss/atendimentoConsultaAgenda2.jsp"><i class="mv-basico dp18">tag</i><span>Atendimento Consulta</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Consulta Rápida" href="http://sigss.betim.mg.gov.br/sigss/consultaRapida.jsp"><i class="mv-basico dp18">tag</i><span>Consulta Rápida</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Lista de Espera" href="http://sigss.betim.mg.gov.br/sigss/listaEspera.jsp"><i class="mv-basico dp18">tag</i><span>Lista de Espera</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Painel de Chamado Atendimento" onclick="openBlank(&quot;painelChamadoConsulta.jsp&quot;)" href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#?painelChamadoConsulta"><i class="mv-basico dp18">tag</i><span>Painel de Chamado Atendimento</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Transferência de Agenda" href="http://sigss.betim.mg.gov.br/sigss/transferenciaAgendaConsulta.jsp"><i class="mv-basico dp18">tag</i><span>Transferência de Agenda</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Movimentação Estoque</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Confirmação de Entrada" href="http://sigss.betim.mg.gov.br/sigss/estoqueEntradaConfirmacao.jsp"><i class="mv-basico dp18">tag</i><span>Confirmação de Entrada</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Ped. Online (Solicitação)" href="http://sigss.betim.mg.gov.br/sigss/estoquePedidoOnLineSolicitacao.jsp"><i class="mv-basico dp18">tag</i><span>Ped. Online (Solicitação)</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Saída Estoque (Farmácia)" href="http://sigss.betim.mg.gov.br/sigss/estoqueSaidaFarmacia.jsp"><i class="mv-basico dp18">tag</i><span>Saída Estoque (Farmácia)</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Saída Estoque (Receita)" href="http://sigss.betim.mg.gov.br/sigss/estoqueSaidaFarmacia.jsp?is_receita=true"><i class="mv-basico dp18">tag</i><span>Saída Estoque (Receita)</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Saída Estoque (Transf.)" href="http://sigss.betim.mg.gov.br/sigss/estoqueSaidaTransferencia.jsp"><i class="mv-basico dp18">tag</i><span>Saída Estoque (Transf.)</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>P.P.D.C</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Cadastro P.P.D.C" href="http://sigss.betim.mg.gov.br/sigss/ppdc.jsp"><i class="mv-basico dp18">tag</i><span>Cadastro P.P.D.C</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Público</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Chamar Senha" href="http://sigss.betim.mg.gov.br/sigss/gerarChamado.jsp"><i class="mv-basico dp18">tag</i><span>Chamar Senha</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Gerar Senha" href="http://sigss.betim.mg.gov.br/sigss/gerarSenha.jsp"><i class="mv-basico dp18">tag</i><span>Gerar Senha</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Painel de Senha" onclick="openBlank(&quot;painelChamado.jsp&quot;)" href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#?painelChamado"><i class="mv-basico dp18">tag</i><span>Painel de Senha</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Recepção</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Fila" href="http://sigss.betim.mg.gov.br/sigss/recepcaoFila.jsp"><i class="mv-basico dp18">tag</i><span>Fila</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Recepção" href="http://sigss.betim.mg.gov.br/sigss/atbaRecepcao.jsp"><i class="mv-basico dp18">tag</i><span>Recepção</span></a></div></div></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp36">cadastro</i><span>Cadastros</span></button><div class="sigss-navigation-group__items"><div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Cadastros Básicos</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Cadastro de Estratificação de Risco" href="http://sigss.betim.mg.gov.br/sigss/estratificacaoRisco.jsp?o5rkJIcQm7H5OVPy/K/YlO79OSrqmt36sEOuXRMteSf0Bv7HciBLmWz4udh1dhABjpO3h6k5V/U9qZRu/1g0s5MXvfe9jYb9gqEfDXnmjrb1GiJQGseeQ/RmwMHET8HlEgHJtONWJ3pYd4iqpxUwevkjQmUYn9mEPORocJbtreZyPEvvi1PiHGjGVP++2SYZpy+CaAJiT5q1HkBM5vhol/PG0OABwKaSUWX+I74hHi0DKbVYoaQrOt5xZj3rXYKutL3i77aFWklk35RPvCru+MDhUVSUYJdLTl30SGHJdzxGeUGMwiM4w1nmeR4jbF2/f3YE+Xs7IYs6XkUhuVQ+FxRUwXGoNBnsfJ78be2iet26LclNoih+wu1k5DRrUA9JhJd74gPnBYIK1IiwbqK8UQFRJn8DC6i3DdsaW3Rdj6E="><i class="mv-basico dp18">tag</i><span>Cadastro de Estratificação de Risco</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Imóveis e Domicílios</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Imóveis e Domicílios" href="http://sigss.betim.mg.gov.br/sigss/imobiliarioFamiliar.jsp"><i class="mv-basico dp18">tag</i><span>Imóveis e Domicílios</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Profissional</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Configuração de Agenda Profissional" href="http://sigss.betim.mg.gov.br/sigss/configuracaoAgenda.jsp"><i class="mv-basico dp18">tag</i><span>Configuração de Agenda Profissional</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Profissionais" href="http://sigss.betim.mg.gov.br/sigss/profissionalSaude.jsp"><i class="mv-basico dp18">tag</i><span>Profissionais</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Público</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Guichê" href="http://sigss.betim.mg.gov.br/sigss/guicheAtendimentoPublico.jsp"><i class="mv-basico dp18">tag</i><span>Guichê</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Tipo de Atendimento" href="http://sigss.betim.mg.gov.br/sigss/tipoAtendimentoPublico.jsp"><i class="mv-basico dp18">tag</i><span>Tipo de Atendimento</span></a></div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Usuário do Serviço" href="http://sigss.betim.mg.gov.br/sigss/cadastroPaciente.jsp"><i class="mv-basico dp18">tag</i><span>Usuário do Serviço</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp36">documento</i><span>Relatórios</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Acolhimento/Triagem" href="http://sigss.betim.mg.gov.br/sigss/relatorioTriagem.jsp"><i class="mv-basico dp18">tag</i><span>Acolhimento/Triagem</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Atividades das ACS" href="http://sigss.betim.mg.gov.br/sigss/relatorioACS.jsp"><i class="mv-basico dp18">tag</i><span>Atividades das ACS</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Cadastrais" href="http://sigss.betim.mg.gov.br/sigss/relatorioCadastrais.jsp"><i class="mv-basico dp18">tag</i><span>Cadastrais</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Consultas" href="http://sigss.betim.mg.gov.br/sigss/relatorioConsulta.jsp"><i class="mv-basico dp18">tag</i><span>Consultas</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Estoque" href="http://sigss.betim.mg.gov.br/sigss/relatorioEstoque.jsp"><i class="mv-basico dp18">tag</i><span>Estoque</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Fila/Recepção" href="http://sigss.betim.mg.gov.br/sigss/relatorioAtbaRecepcao.jsp"><i class="mv-basico dp18">tag</i><span>Fila/Recepção</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Lista de Espera" href="http://sigss.betim.mg.gov.br/sigss/relatorioListaEspera.jsp"><i class="mv-basico dp18">tag</i><span>Lista de Espera</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Odontológico" href="http://sigss.betim.mg.gov.br/sigss/relatorioOdonto.jsp"><i class="mv-basico dp18">tag</i><span>Odontológico</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="P.P.D.C." href="http://sigss.betim.mg.gov.br/sigss/relatorioPPDC.jsp"><i class="mv-basico dp18">tag</i><span>P.P.D.C.</span></a><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Proced. Realizados</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Proced. Ambulatoriais" href="http://sigss.betim.mg.gov.br/sigss/relatorioProcedimento.jsp"><i class="mv-basico dp18">tag</i><span>Proced. Ambulatoriais</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Proced. Coletivos" href="http://sigss.betim.mg.gov.br/sigss/relatorioProcedimentoColetivo.jsp"><i class="mv-basico dp18">tag</i><span>Proced. Coletivos</span></a></div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="SIPNI" href="http://sigss.betim.mg.gov.br/sigss/relatorioVacinaSIPNI.jsp"><i class="mv-basico dp18">tag</i><span>SIPNI</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp36">interface</i><span>Sistema</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Correio Interno" href="http://sigss.betim.mg.gov.br/sigss/correioInterno.jsp"><i class="mv-basico dp18">tag</i><span>Correio Interno</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Trocar Senha" href="http://sigss.betim.mg.gov.br/sigss/senhaUsuario.jsp"><i class="mv-basico dp18">tag</i><span>Trocar Senha</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Relatórios Personalizados</span></button><div class="sigss-navigation-group__items"><div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>APURASUS</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Estoque por unidade" href="http://sigss.betim.mg.gov.br/sigss/webPageViewer.jsp?urlExterna=http://soul.betim.mg.gov.br/report-executor/report-viewer?QVNVIRjUbyB+IvmQ/CXQm/oiRnTJWfZswEjfLA9/ycuEl3viA+cFggrUiLBuorxRKiLAmqspTcpb+cx6X85fquCwdwYne1nj3ea7VxbMsnYB6/+N0Wb36ByKTk02RNPF2vFVY7ns6wfghkPuQm2vUyBUOeowKcHdxsCnM2pvVxKC9EmSDcaEUkSe+HW0vueVAXK9Nq6o2UsWW/i44y3Y51SZUKosVaUkURVHjC7Mrn8BuR2ubDmz1h0Jgx0QlnIHXle5YBTeP7JBD0BbtfdhtBnKUVeucKMI+r1XbNqK9mP7PoxKCBpEVhSEp5AlCWJDKj/DdPnud8QktNxFi3BDLZb2jwXLBurlwvaAUBK3/nKtJNdAMBbasraOXg9d7KcQTBVuerhDDJtFOufHW+IEnHGia9wFEdSNBj8tU1r1orz5slvTZluz2zBqVQ55VGdH"><i class="mv-basico dp18">tag</i><span>Estoque por unidade</span></a><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Itens de produção" href="http://sigss.betim.mg.gov.br/sigss/webPageViewer.jsp?urlExterna=http://soul.betim.mg.gov.br/report-executor/report-viewer?hxgWw5Ifv8VTlGnuzcqSPfoiRnTJWfZswEjfLA9/ycuEl3viA+cFggrUiLBuorxRKiLAmqspTcpb+cx6X85fquCwdwYne1nj3ea7VxbMsnYB6/+N0Wb36ByKTk02RNPF2vFVY7ns6wfghkPuQm2vUyBUOeowKcHdxsCnM2pvVxKC9EmSDcaEUkSe+HW0vueVAXK9Nq6o2UsWW/i44y3Y51SZUKosVaUkURVHjC7Mrn8BuR2ubDmz1h0Jgx0QlnIHXle5YBTeP7JBD0BbtfdhtBnKUVeucKMI+r1XbNqK9mP7PoxKCBpEVhSEp5AlCWJDKj/DdPnud8QktNxFi3BDLZb2jwXLBurlwvaAUBK3/nKtJNdAMBbasraOXg9d7KcQTBVuerhDDJtFOufHW+IEnHGia9wFEdSNBj8tU1r1orz5slvTZluz2zBqVQ55VGdH"><i class="mv-basico dp18">tag</i><span>Itens de produção</span></a></div></div><div class="sigss-navigation-group"><button class="sigss-navigation-group__handler layout-row sigss-container--center"><i class="mv-basico dp18 rotate">seta_direita_simples</i><span>Procedimentos e exames</span></button><div class="sigss-navigation-group__items"><div></div><a class="pointer sigss-navigation-item layout-row sigss-container--center" title="Relatório mensal por equipe" href="http://sigss.betim.mg.gov.br/sigss/webPageViewer.jsp?urlExterna=http://soul.betim.mg.gov.br/report-executor/report-viewer?Ve1Iz1iKr8f97oq/o36QGPoiRnTJWfZswEjfLA9/ycuEl3viA+cFggrUiLBuorxRKiLAmqspTcpb+cx6X85fquCwdwYne1nj3ea7VxbMsnYB6/+N0Wb36ByKTk02RNPF2vFVY7ns6wfghkPuQm2vUyBUOeowKcHdxsCnM2pvVxKC9EmSDcaEUkSe+HW0vueVAXK9Nq6o2UsWW/i44y3Y51SZUKosVaUkURVHjC7Mrn8BuR2ubDmz1h0Jgx0QlnIHXle5YBTeP7JBD0BbtfdhtBnKUVeucKMI+r1XbNqK9mP7PoxKCBpEVhSEp5AlCWJDKj/DdPnud8QktNxFi3BDLZb2jwXLBurlwvaAUBK3/nKtJNdAMBbasraOXg9d7KcQTBVuerhDDJtFOufHW+IEnHGia9wFEdSNBj8tU1r1orz5slvTZluz2zBqVQ55VGdH"><i class="mv-basico dp18">tag</i><span>Relatório mensal por equipe</span></a></div></div></div></div></div>
+                
+                <div class="sigss-viewport-navigation__footer layout-column sigss-container--center">
+                    <img src="./fila_files/logo" onerror="this.style.display=&quot;none&quot;" id="logo-cliente">
+                </div>
+            </nav>
+            <div class="sigss-viewport-backdrop"></div>
+
+            <div class="sigss-viewport-content">
+                <main id="sigss-main"> 
+	<script type="text/javascript">
+        CONFIG_BUTTON.push(['btnNovo', false]);
+        CONFIG_BUTTON.push(['btnVisualizar', true]);
+        CONFIG_BUTTON.push(['btnAlterar', false]);
+        CONFIG_BUTTON.push(['btnExcluir', false]);
+        CONFIG.isBtnChegou = `false`;
+
+        CONFIG.usuarioNome = "GUILHERME PAICHECO FERREIRA";
+
+
+        CONFIG.isTrocaUnidade = true;
+        CONFIG.isUnidadePadrao = true;
+        CONFIG.unsaPK = "103-1";
+        CONFIG.unsaCod = "103-1";
+        CONFIG.unsaNome = "UBS PETROVALE EDUARDO ANTONIO ROCHA";
+        CONFIG.limoPK = "364985-1";
+
+        CONFIG.isProfissionalPadrao = true;
+        CONFIG.prsaPK = "71154-1";
+        CONFIG.prsaCod = "1266473-1";
+        CONFIG.prsaNome = "GUILHERME PAICHECO FERREIRA"
+
+        CONFIG.trieIsAgcoObrigatorio = 'f';
+        CONFIG.clieIsTrieEspecializada = 'f';
+
+        CONFIG.isDemo = false;
+
+        CONFIG.isConvenioBasicPadrao = true;
+        CONFIG.convBasicPK = "1-1";
+        CONFIG.convBasicCod = "1-1";
+        CONFIG.convBasicNome = "SUS";
+
+
+        CONFIG.isConvenioEspecPadrao = true;
+        CONFIG.convEspecPK = "1-1";
+        CONFIG.convEspecCod = "1-1";
+        CONFIG.convEspecNome = "SUS";
+        CONFIG.isUtilizaAgendamentoNovo = 't' === 't';
+        CONFIG.clieIsFluxoClassRisco = 'f';
+        CONFIG.prAtcr = "f";
+        CONFIG.mostraBotaoEtiqueta = false;
+
+        limitePorPagina = '0';
+
+        CONFIG.clienteIsSigrah = "f"
+        CONFIG.isBtnReclassificar = true;
+
+    </script>
+
+	<div class="sigss-title ui-widget-header">Acolhimento/Atendimento de Triagem</div>
+
+	<div id="tabs" class="sigss-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="tabs-consulta" aria-labelledby="ui-id-1" aria-selected="true"><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#tabs-consulta" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1">Agenda de Acolhimento/Triagem</a></li>
+			<li class="ui-state-default ui-corner-top ui-state-disabled" role="tab" tabindex="-1" aria-controls="tabs-manutencao" aria-labelledby="ui-id-2" aria-selected="false" aria-disabled="true"><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#tabs-manutencao" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2">Manutenção</a></li>
+		</ul>
+
+		<div id="tabs-consulta" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-expanded="true" aria-hidden="false">
+			<form id="form-consulta" class="sigss-enter-emula-tab">
+
+				<div class="sigss-div sigss-float-left sigss-float-left">
+					<label>Unidade de Saúde</label> <select id="unidadeSaude.unsaPK" name="unidadeSaude.unsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 400px; display: none;" tabindex="1">
+						<option value="">...</option>
+					<option value="103-1-364985-1">103-1 — UBS PETROVALE EDUARDO ANTONIO ROCHA</option></select><div id="unidadeSaude_unsaPK_chzn" class="chzn-container chzn-container-single" style="width: 400px;"><a href="javascript:void(0)" class="chzn-single"><span>103-1 — UBS PETROVALE EDUARDO ANTONIO ROCHA</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 398.4px; top: 18px;"><div class="chzn-search"><input class="chzn-input-search" id="unidadeSaude_unsaPK_chzn_search" name="unidadeSaude_unsaPK_chzn_search" type="search" maxlength="50" autocomplete="off" style="width: 363.8px;"></div><ul class="chzn-results"><table><thead><tr class="tr-thead-chosen active-result" style="display: block;"><th><div style="width:55px; " title="Código">Código</div></th><th><div style="width:300px; padding-left: 5px;" title="Nome da Unidade">Nome da Unidade</div></th></tr></thead><tbody><tr id="unidadeSaude_unsaPK_chzn_o_0" class="sigss-tr-chosen active-result" style="display: block;"><td><div title="...">...</div></td></tr><tr id="unidadeSaude_unsaPK_chzn_o_1" class="sigss-tr-chosen active-result result-selected" style="display: block;"><td><div title="103-1 — UBS PETROVALE EDUARDO ANTONIO ROCHA">103-1 — UBS PETROVALE EDUARDO ANTONIO ROCHA</div></td></tr></tbody></table></ul></div></div>
+				</div>
+
+				<div class="sigss-div sigss-float-left sigss-float-left" style="padding-bottom: 5px;">
+					<label>Data</label> <input type="text" id="agtrData" name="agtrData" class="sigss-data sigss-calendario hasDatepicker" tabindex="2"><img class="ui-datepicker-trigger" src="./fila_files/calendar.png" alt="Exibir calendário" title="Exibir calendário">
+				</div>
+
+				<div class="sigss-div sigss-float-left">
+					<label>Período</label>
+					<div class="sigss-float-left">
+						<input type="text" id="horaInicial" name="horaInicial" class="sigss-hora" tabindex="3"> <input type="text" id="horaFinal" name="horaFinal" class="sigss-hora" tabindex="4">
+					</div>
+				</div>
+
+				<div class="sigss-div sigss-float-clear" style="margin-bottom: 5px;">
+
+					<div class="sigss-div sigss-float-left">
+						<label>Profissional <i>*</i></label> <select id="profissional.prsaPK" name="profissional.prsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 400px; display: none;" size-expand="100" tabindex="5"><option value="" id="profissional.prsaPK:0">...</option><option id="profissional.prsaPK:1" class="" value="2436-1">1676-1 — CLAUDIA MARCIA MARTINS DA SILVA — 703200611301390</option><option id="profissional.prsaPK:2" class="" value="69732-1">1237245-1 — KAMILLY KETLEY JUSTINO DA SILVA — 702609720893643</option><option id="profissional.prsaPK:3" class="" value="2438-1">1678-1 — MARIA ISABEL DA SILVA BARBOSA — 704001882692060</option><option value="71154-1">1266473-1 — GUILHERME PAICHECO FERREIRA</option></select><div id="profissional_prsaPK_chzn" class="chzn-container chzn-container-single" style="width: 400px;"><a href="javascript:void(0)" class="chzn-single"><span>1237245-1 — KAMILLY KETLEY JUSTINO DA SILVA — 702609720893643</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 498.4px; top: 17px;"><div class="chzn-search"><input class="chzn-input-search" id="profissional_prsaPK_chzn_search" name="profissional_prsaPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 463.8px;"></div><ul class="chzn-results"><table><thead><tr class="tr-thead-chosen active-result" style="display: block;"><th><div style="width:70px; " title="Código">Código</div></th><th><div style="width:280px; padding-left: 5px;" title="Nome do Profissional">Nome do Profissional</div></th><th><div style="width:100px; padding-left: 5px;" title="CNS">CNS</div></th></tr></thead><tbody><tr id="profissional_prsaPK_chzn_o_0" class="sigss-tr-chosen active-result" style="display: block;"><td><div style="width:70px; " title="...">...</div></td><td><div style="width:280px; padding-left: 5px;" title=""></div></td><td><div style="width:100px; padding-left: 5px;" title=""></div></td></tr><tr id="profissional_prsaPK_chzn_o_1" class="sigss-tr-chosen active-result" style="display: block;"><td><div style="width:70px; " title="1676-1">1676-1</div></td><td><div style="width:280px; padding-left: 5px;" title="CLAUDIA MARCIA MARTINS DA SILVA">CLAUDIA MARCIA MARTINS DA SILVA</div></td><td><div style="width:100px; padding-left: 5px;" title="703200611301390">703200611301390</div></td></tr><tr id="profissional_prsaPK_chzn_o_2" class="sigss-tr-chosen active-result result-selected" style="display: block;"><td><div style="width:70px; " title="1237245-1">1237245-1</div></td><td><div style="width:280px; padding-left: 5px;" title="KAMILLY KETLEY JUSTINO DA SILVA">KAMILLY KETLEY JUSTINO DA SILVA</div></td><td><div style="width:100px; padding-left: 5px;" title="702609720893643">702609720893643</div></td></tr><tr id="profissional_prsaPK_chzn_o_3" class="sigss-tr-chosen active-result" style="display: block;"><td><div style="width:70px; " title="1678-1">1678-1</div></td><td><div style="width:280px; padding-left: 5px;" title="MARIA ISABEL DA SILVA BARBOSA">MARIA ISABEL DA SILVA BARBOSA</div></td><td><div style="width:100px; padding-left: 5px;" title="704001882692060">704001882692060</div></td></tr><tr id="profissional_prsaPK_chzn_o_4" class="sigss-tr-chosen active-result" style="display: block;"><td><div title="1266473-1 — GUILHERME PAICHECO FERREIRA">1266473-1 — GUILHERME PAICHECO FERREIRA</div></td></tr></tbody></table></ul></div></div>
+					<input type="hidden" class="sigss-hidden sigss-negado" name="profissional_prsaPK_isPopulate" value="t"></div>
+					<div class="sigss-div sigss-float-right" style="padding-top: 8px; margin-left: 33px; margin-right: 12px;">
+						<button type="button" id="btnBuscar" class="btn-buscar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="gridBuscaReload()" role="button" aria-disabled="false" tabindex="6"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-search"></span><span class="ui-button-text">Buscar</span></button>
+						<button type="button" id="btnTransferirAgenda" name="btnTransferirAgenda" class="btn-transferir ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-transfer-e-w"></span><span class="ui-button-text">Transferir</span></button>
+						<button type="button" id="btnChamar" class="btn-chamar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Chamar" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon  ui-icon20x20 ui-icon-microfone"></span><span class="ui-button-text">Chamar</span></button>
+						<div class="sigss-div sigss-float-right sigss-oculta" id="isBtnChegou">
+							<button type="button" id="btnChegou" class="btn-ok ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Chegou" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon  ui-icon20x20 ui-icon-ok"></span><span class="ui-button-text">Chegou</span></button>
+						</div>
+						
+					</div>
+
+				</div>
+
+				<div class="sigss-float-clear">
+					<br>
+					<div id="div-botoes-urgencia" class="sigss-div sigss-float-clear">
+						<button type="button" id="btnEmergencia" class="btn-help ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="ajudaProtocoloManchester(&#39;EME&#39;)" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-help"></span><span class="ui-button-text"></span></button>
+						<label class="legendaEmergencia" id="lbEmergencia" value="0">EMERGÊNCIA(0)</label>
+						<button type="button" id="btnMuitoUrgente" class="btn-help ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="ajudaProtocoloManchester(&#39;MUR&#39;)" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-help"></span><span class="ui-button-text"></span></button>
+						<label class="legendaMuitoUrgente" id="lbMuitoUrgente">MUITO URGENTE(0)</label>
+						<button type="button" id="btnUrgente" class="btn-help ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="ajudaProtocoloManchester(&#39;URG&#39;)" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-help"></span><span class="ui-button-text"></span></button>
+						<label class="legendaUrgente" id="lbUrgente">URGENTE(0)</label>
+						<button type="button" id="btnPoucoUrgente" class="btn-help ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="ajudaProtocoloManchester(&#39;PUR&#39;)" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-help"></span><span class="ui-button-text"></span></button>
+						<label class="legendaPoucoUngente" id="lbPoucoUrgente">POUCO URGENTE(0)</label>
+						<button type="button" id="btnNormal" class="btn-help ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="showProtocoloNormal()" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-help"></span><span class="ui-button-text"></span></button>
+						<label class="legendaNormal" id="lbNormal">NORMAL(5)</label>
+					</div>
+					<div class="sigss-container no-padding layout-row">
+						<a id="linkPrioridade"> <i id="btnhelpPrioridade" class="mv-basico dp16" title="Tipo de prioridade">ajuda</i>
+						</a>
+					</div>
+					<div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_busca" dir="ltr" style="width: 940px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_busca"></div><div class="loading ui-state-default ui-state-active" id="load_grid_busca" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_busca" style="width: 940px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 940px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:922px" role="grid" aria-labelledby="gbox_grid_busca" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_busca_cb" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 20px;"><div id="jqgh_grid_busca_cb"><input role="checkbox" id="cb_grid_busca" class="cbox sigss-not-tabindex" type="checkbox"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_agtrIdp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_agtrIdp" class="ui-jqgrid-sortable">agtrIdp<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_agtrIds" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_agtrIds" class="ui-jqgrid-sortable">agtrIds<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_riscoAb" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 39px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_riscoAb" class="ui-jqgrid-sortable">Risco<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_agtrHora" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 36px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_agtrHora" class="ui-jqgrid-sortable">Hora<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_foto" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 39px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_foto" class="ui-jqgrid-sortable">Foto<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isenCod" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 73px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isenCod" class="ui-jqgrid-sortable">Cód. Pac. <span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_entiNome" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 280px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_entiNome" class="ui-jqgrid-sortable">Usuário(a) do Serviço<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prioridade" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 84px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prioridade" class="ui-jqgrid-sortable">Prioridade<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isenDtNasc" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 168px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isenDtNasc" class="ui-jqgrid-sortable">Idade<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_horaCheg" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_horaCheg" class="ui-jqgrid-sortable">Chegada<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_horaSaid" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_horaSaid" class="ui-jqgrid-sortable">Saida<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_preparado" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 90px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_preparado" class="ui-jqgrid-sortable">Preparado(a)<span class="s-ico" style=""><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_btn" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 43px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_btn" class="ui-jqgrid-sortable">Atender<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isenPessoaDeficiente" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isenPessoaDeficiente" class="ui-jqgrid-sortable">NecEspec<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_btn2" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 60px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_btn2" class="ui-jqgrid-sortable">Faltante<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_btn3" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 50px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_btn3" class="ui-jqgrid-sortable">Conc. Aten.<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isFaltante" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isFaltante" class="ui-jqgrid-sortable">isFaltante<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isPreparado" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isPreparado" class="ui-jqgrid-sortable">isPreparado<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isenIdp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isenIdp" class="ui-jqgrid-sortable">isenIdp<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_isenIds" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_isenIds" class="ui-jqgrid-sortable">isenIds<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_agtrChegada" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_agtrChegada" class="ui-jqgrid-sortable">agtrChegada<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 315px; width: 940px;"><div style="position:relative;"><div></div><table id="grid_busca" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="true" aria-labelledby="gbox_grid_busca" class="ui-jqgrid-btable" style="width: 922px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:20px;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:39px;"></td><td role="gridcell" style="height:0px;width:36px;"></td><td role="gridcell" style="height:0px;width:39px;"></td><td role="gridcell" style="height:0px;width:73px;"></td><td role="gridcell" style="height:0px;width:280px;"></td><td role="gridcell" style="height:0px;width:84px;"></td><td role="gridcell" style="height:0px;width:168px;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:90px;"></td><td role="gridcell" style="height:0px;width:43px;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:60px;display:none;"></td><td role="gridcell" style="height:0px;width:50px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td></tr><tr role="row" id="2500017-1" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr"><td role="gridcell" style="text-align:center;width: 20px;" aria-describedby="grid_busca_cb"><input role="checkbox" type="checkbox" id="jqg_grid_busca_2500017-1" class="cbox" name="jqg_grid_busca_2500017-1"></td><td role="gridcell" style="display:none;" title="2500017" aria-describedby="grid_busca_agtrIdp">2500017</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_agtrIds">1</td><td role="gridcell" style="text-align:center;" title="Normal" aria-describedby="grid_busca_riscoAb" class="nor-fundo">NOR</td><td role="gridcell" style="text-align:center;" title="09:41" aria-describedby="grid_busca_agtrHora">09:41</td><td role="gridcell" style="" title="GERALDO MAGELA QUARESMA" aria-describedby="grid_busca_foto"><div class="chzn-container-foto"><img id="foto_2500017-1" src="./fila_files/homem.png" class="foto foto-usuario-servico-peq" title="GERALDO MAGELA QUARESMA" alt="GERALDO MAGELA QUARESMA"></div></td><td role="gridcell" style="text-align:center;" title="205256-1" aria-describedby="grid_busca_isenCod">205256-1</td><td role="gridcell" style="text-align:left;" title="GERALDO MAGELA QUARESMA" aria-describedby="grid_busca_entiNome"><div class="layout-row sigss-container--space-between"><div class="layout-column no-overflow" style="align-self: center;"><b>GERALDO MAGELA QUARESMA</b></div><div class="layout-row sigss-container--center"></div></div></td><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_prioridade"></td><td role="gridcell" style="text-align:center;" title="46 ano(s), 2 mês(es) e 16 dia(s)" aria-describedby="grid_busca_isenDtNasc">46 ano(s), 2 mês(es) e 16 dia(s)</td><td role="gridcell" style="text-align:center;display:none;" title="09:41" aria-describedby="grid_busca_horaCheg">09:41</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_horaSaid">&nbsp;</td><td role="gridcell" style="" title="10/07/2026 10:00:12" aria-describedby="grid_busca_preparado">10/07/2026 10:00:12</td><td role="gridcell" style="text-align:center;" title="" aria-describedby="grid_busca_btn">&nbsp;<button type="button" name="btnAtender" class="btn-preparo-enfermagem" onclick="atender(&#39;2500017-1&#39;);" style="margin-right: 5px;" title="Atender"></button></td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_isenPessoaDeficiente">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn2">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn3">&nbsp;</td><td role="gridcell" style="display:none;" title="f" aria-describedby="grid_busca_isFaltante">f</td><td role="gridcell" style="display:none;" title="t" aria-describedby="grid_busca_isPreparado">t</td><td role="gridcell" style="display:none;" title="257164" aria-describedby="grid_busca_isenIdp">257164</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_isenIds">1</td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_agtrChegada">&nbsp;</td></tr><tr role="row" id="2499777-1" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr ui-grid-zebrado"><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_cb"><input role="checkbox" type="checkbox" id="jqg_grid_busca_2499777-1" class="cbox" name="jqg_grid_busca_2499777-1"></td><td role="gridcell" style="display:none;" title="2499777" aria-describedby="grid_busca_agtrIdp">2499777</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_agtrIds">1</td><td role="gridcell" style="text-align:center;" title="Normal" aria-describedby="grid_busca_riscoAb" class="nor-fundo">NOR</td><td role="gridcell" style="text-align:center;" title="08:54" aria-describedby="grid_busca_agtrHora">08:54</td><td role="gridcell" style="" title="CAMILO ANTONIO PERDIGAO" aria-describedby="grid_busca_foto"><div class="chzn-container-foto"><img id="foto_2499777-1" src="./fila_files/homem.png" class="foto foto-usuario-servico-peq" title="CAMILO ANTONIO PERDIGAO" alt="CAMILO ANTONIO PERDIGAO"></div></td><td role="gridcell" style="text-align:center;" title="330904-1" aria-describedby="grid_busca_isenCod">330904-1</td><td role="gridcell" style="text-align:left;" title="CAMILO ANTONIO PERDIGAO" aria-describedby="grid_busca_entiNome"><div class="layout-row sigss-container--space-between"><div class="layout-column no-overflow" style="align-self: center;"><b>CAMILO ANTONIO PERDIGAO</b></div><div class="layout-row sigss-container--center"></div></div></td><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_prioridade"></td><td role="gridcell" style="text-align:center;" title="56 ano(s), 11 mês(es) e 22 dia(s)" aria-describedby="grid_busca_isenDtNasc">56 ano(s), 11 mês(es) e 22 dia(s)</td><td role="gridcell" style="text-align:center;display:none;" title="08:54" aria-describedby="grid_busca_horaCheg">08:54</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_horaSaid">&nbsp;</td><td role="gridcell" style="" title="10/07/2026 09:14:01" aria-describedby="grid_busca_preparado">10/07/2026 09:14:01</td><td role="gridcell" style="text-align:center;" title="" aria-describedby="grid_busca_btn">&nbsp;<button type="button" name="btnAtender" class="btn-preparo-enfermagem" onclick="atender(&#39;2499777-1&#39;);" style="margin-right: 5px;" title="Atender"></button></td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_isenPessoaDeficiente">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn2">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn3">&nbsp;</td><td role="gridcell" style="display:none;" title="f" aria-describedby="grid_busca_isFaltante">f</td><td role="gridcell" style="display:none;" title="t" aria-describedby="grid_busca_isPreparado">t</td><td role="gridcell" style="display:none;" title="379347" aria-describedby="grid_busca_isenIdp">379347</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_isenIds">1</td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_agtrChegada">&nbsp;</td></tr><tr role="row" id="2499293-1" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr"><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_cb"><input role="checkbox" type="checkbox" id="jqg_grid_busca_2499293-1" class="cbox" name="jqg_grid_busca_2499293-1"></td><td role="gridcell" style="display:none;" title="2499293" aria-describedby="grid_busca_agtrIdp">2499293</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_agtrIds">1</td><td role="gridcell" style="text-align:center;" title="Normal" aria-describedby="grid_busca_riscoAb" class="nor-fundo">NOR</td><td role="gridcell" style="text-align:center;" title="07:37" aria-describedby="grid_busca_agtrHora">07:37</td><td role="gridcell" style="" title="MARIA DE FATIMA DE SOUZA SILVA" aria-describedby="grid_busca_foto"><div class="chzn-container-foto"><img id="foto_2499293-1" src="./fila_files/mulher.png" class="foto foto-usuario-servico-peq" title="MARIA DE FATIMA DE SOUZA SILVA" alt="MARIA DE FATIMA DE SOUZA SILVA"></div></td><td role="gridcell" style="text-align:center;" title="183982-1" aria-describedby="grid_busca_isenCod">183982-1</td><td role="gridcell" style="text-align:left;" title="MARIA DE FATIMA DE SOUZA SILVA" aria-describedby="grid_busca_entiNome"><div class="layout-row sigss-container--space-between"><div class="layout-column no-overflow" style="align-self: center;"><b>MARIA DE FATIMA DE SOUZA SILVA</b></div><div class="layout-row sigss-container--center"></div></div></td><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_prioridade"></td><td role="gridcell" style="text-align:center;" title="47 ano(s), 6 mês(es) e 10 dia(s)" aria-describedby="grid_busca_isenDtNasc">47 ano(s), 6 mês(es) e 10 dia(s)</td><td role="gridcell" style="text-align:center;display:none;" title="07:37" aria-describedby="grid_busca_horaCheg">07:37</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_horaSaid">&nbsp;</td><td role="gridcell" style="" title="10/07/2026 07:48:48" aria-describedby="grid_busca_preparado">10/07/2026 07:48:48</td><td role="gridcell" style="text-align:center;" title="" aria-describedby="grid_busca_btn">&nbsp;<button type="button" name="btnAtender" class="btn-preparo-enfermagem" onclick="atender(&#39;2499293-1&#39;);" style="margin-right: 5px;" title="Atender"></button></td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_isenPessoaDeficiente">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn2">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn3">&nbsp;</td><td role="gridcell" style="display:none;" title="f" aria-describedby="grid_busca_isFaltante">f</td><td role="gridcell" style="display:none;" title="t" aria-describedby="grid_busca_isPreparado">t</td><td role="gridcell" style="display:none;" title="235957" aria-describedby="grid_busca_isenIdp">235957</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_isenIds">1</td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_agtrChegada">&nbsp;</td></tr><tr role="row" id="2499251-1" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr ui-grid-zebrado"><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_cb"><input role="checkbox" type="checkbox" id="jqg_grid_busca_2499251-1" class="cbox" name="jqg_grid_busca_2499251-1"></td><td role="gridcell" style="display:none;" title="2499251" aria-describedby="grid_busca_agtrIdp">2499251</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_agtrIds">1</td><td role="gridcell" style="text-align:center;" title="Normal" aria-describedby="grid_busca_riscoAb" class="nor-fundo">NOR</td><td role="gridcell" style="text-align:center;" title="07:31" aria-describedby="grid_busca_agtrHora">07:31</td><td role="gridcell" style="" title="FERNANDA RIBEIRO DA COSTA" aria-describedby="grid_busca_foto"><div class="chzn-container-foto"><img id="foto_2499251-1" src="./fila_files/mulher.png" class="foto foto-usuario-servico-peq" title="FERNANDA RIBEIRO DA COSTA" alt="FERNANDA RIBEIRO DA COSTA"></div></td><td role="gridcell" style="text-align:center;" title="1696-1" aria-describedby="grid_busca_isenCod">1696-1</td><td role="gridcell" style="text-align:left;" title="FERNANDA RIBEIRO DA COSTA" aria-describedby="grid_busca_entiNome"><div class="layout-row sigss-container--space-between"><div class="layout-column no-overflow" style="align-self: center;"><b>FERNANDA RIBEIRO DA COSTA</b></div><div class="layout-row sigss-container--center"></div></div></td><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_prioridade"></td><td role="gridcell" style="text-align:center;" title="51 ano(s), 9 mês(es) e 24 dia(s)" aria-describedby="grid_busca_isenDtNasc">51 ano(s), 9 mês(es) e 24 dia(s)</td><td role="gridcell" style="text-align:center;display:none;" title="07:31" aria-describedby="grid_busca_horaCheg">07:31</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_horaSaid">&nbsp;</td><td role="gridcell" style="" title="10/07/2026 07:38:03" aria-describedby="grid_busca_preparado">10/07/2026 07:38:03</td><td role="gridcell" style="text-align:center;" title="" aria-describedby="grid_busca_btn">&nbsp;<button type="button" name="btnAtender" class="btn-preparo-enfermagem" onclick="atender(&#39;2499251-1&#39;);" style="margin-right: 5px;" title="Atender"></button></td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_isenPessoaDeficiente">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn2">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn3">&nbsp;</td><td role="gridcell" style="display:none;" title="f" aria-describedby="grid_busca_isFaltante">f</td><td role="gridcell" style="display:none;" title="t" aria-describedby="grid_busca_isPreparado">t</td><td role="gridcell" style="display:none;" title="56694" aria-describedby="grid_busca_isenIdp">56694</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_isenIds">1</td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_agtrChegada">&nbsp;</td></tr><tr role="row" id="2499098-1" tabindex="-1" class="ui-widget-content jqgrow ui-row-ltr"><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_cb"><input role="checkbox" type="checkbox" id="jqg_grid_busca_2499098-1" class="cbox" name="jqg_grid_busca_2499098-1"></td><td role="gridcell" style="display:none;" title="2499098" aria-describedby="grid_busca_agtrIdp">2499098</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_agtrIds">1</td><td role="gridcell" style="text-align:center;" title="Normal" aria-describedby="grid_busca_riscoAb" class="nor-fundo">NOR</td><td role="gridcell" style="text-align:center;" title="07:15" aria-describedby="grid_busca_agtrHora">07:15</td><td role="gridcell" style="" title="GISELLE CAROLINA DE SOUZA DIAS" aria-describedby="grid_busca_foto"><div class="chzn-container-foto"><img id="foto_2499098-1" src="./fila_files/mulher.png" class="foto foto-usuario-servico-peq" title="GISELLE CAROLINA DE SOUZA DIAS" alt="GISELLE CAROLINA DE SOUZA DIAS"></div></td><td role="gridcell" style="text-align:center;" title="194965-1" aria-describedby="grid_busca_isenCod">194965-1</td><td role="gridcell" style="text-align:left;" title="GISELLE CAROLINA DE SOUZA DIAS" aria-describedby="grid_busca_entiNome"><div class="layout-row sigss-container--space-between"><div class="layout-column no-overflow" style="align-self: center;"><b>GISELLE CAROLINA DE SOUZA DIAS</b></div><div class="layout-row sigss-container--center"></div></div></td><td role="gridcell" style="text-align:center;" aria-describedby="grid_busca_prioridade"></td><td role="gridcell" style="text-align:center;" title="32 ano(s), 11 mês(es) e 26 dia(s)" aria-describedby="grid_busca_isenDtNasc">32 ano(s), 11 mês(es) e 26 dia(s)</td><td role="gridcell" style="text-align:center;display:none;" title="07:15" aria-describedby="grid_busca_horaCheg">07:15</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_horaSaid">&nbsp;</td><td role="gridcell" style="" title="10/07/2026 07:26:00" aria-describedby="grid_busca_preparado">10/07/2026 07:26:00</td><td role="gridcell" style="text-align:center;" title="" aria-describedby="grid_busca_btn">&nbsp;<button type="button" name="btnAtender" class="btn-preparo-enfermagem" onclick="atender(&#39;2499098-1&#39;);" style="margin-right: 5px;" title="Atender"></button></td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_isenPessoaDeficiente">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn2">&nbsp;</td><td role="gridcell" style="text-align:center;display:none;" title="" aria-describedby="grid_busca_btn3">&nbsp;</td><td role="gridcell" style="display:none;" title="f" aria-describedby="grid_busca_isFaltante">f</td><td role="gridcell" style="display:none;" title="t" aria-describedby="grid_busca_isPreparado">t</td><td role="gridcell" style="display:none;" title="246888" aria-describedby="grid_busca_isenIdp">246888</td><td role="gridcell" style="display:none;" title="1" aria-describedby="grid_busca_isenIds">1</td><td role="gridcell" style="display:none;" title="" aria-describedby="grid_busca_agtrChegada">&nbsp;</td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_busca">&nbsp;</div><div id="grid_pager_busca" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr" style="width: 940px;"><div id="pg_grid_pager_busca" class="ui-pager-control" role="group"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table" style="width:100%;table-layout:fixed;height:100%;" role="row"><tbody><tr><td id="grid_pager_busca_left" align="left"></td><td id="grid_pager_busca_center" align="center" style="white-space: pre; width: 232px;"><table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table"><tbody><tr><td id="first_grid_pager_busca" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-first"></span></td><td id="prev_grid_pager_busca" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-prev"></span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td dir="ltr">Página <input class="ui-pg-input" type="text" size="2" maxlength="7" value="0" role="textbox"> de <span id="sp_1_grid_pager_busca">1</span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td id="next_grid_pager_busca" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-next"></span></td><td id="last_grid_pager_busca" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-end"></span></td></tr></tbody></table></td><td id="grid_pager_busca_right" align="right"><div dir="ltr" style="text-align:right" class="ui-paging-info">Exibindo 1 - 5 de 5</div></td></tr></tbody></table></div></div></div>
+					
+				</div>
+			</form>
+		</div>
+
+
+		<div id="tabs-manutencao" class="sigss-tabs ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs ui-widget ui-corner-all" aria-labelledby="ui-id-2" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+			<form id="form-manutencao" class="sigss-enter-emula-tab">
+				<span> <input type="hidden" id="trie.triePK.idp" name="trie.triePK.idp"> <input type="hidden" id="trie.triePK.ids" name="trie.triePK.ids"> <input type="hidden" id="agtr.agtrPK.idp" name="agtr.agtrPK.idp"> <input type="hidden" id="agtr.agtrPK.ids" name="agtr.agtrPK.ids"> <input type="hidden" id="agco.agcoPK.idp" name="agco.agcoPK.idp"> <input type="hidden" id="agco.agcoPK.ids" name="agco.agcoPK.ids"> <input type="hidden" id="unsa.unsaPK.idp" name="unsa.unsaPK.idp"> <input type="hidden" id="unsa.unsaPK.ids" name="unsa.unsaPK.ids"> <input type="hidden" id="infoIsenNome" name="infoIsenNome"> <input type="hidden" id="infoIsenCod" name="infoIsenCod"> <input type="hidden" id="infoIsenIdp" name="infoIsenIdp"> <input type="hidden" id="infoIsenIds" name="infoIsenIds"> <input type="hidden" id="infoIsenEntfIdp" name="infoIsenEntfIdp"> <input type="hidden" id="infoIsenEntfIds" name="infoIsenEntfIds"> <input type="hidden" id="trie.trieReguaDor" name="trie.trieReguaDor">
+
+				</span>
+
+				<div class="sigss-div">
+					<input type="hidden" id="isen.isenPK.idp" name="isen.isenPK.idp">
+					<input type="hidden" id="isen.isenPK.ids" name="isen.isenPK.ids">
+					<input type="hidden" id="isen.entidadeFisica.entfPK.idp" name="isen.entidadeFisica.entfPK.idp"> <input type="hidden" id="isen.entidadeFisica.entfPK.ids" name="isen.entidadeFisica.entfPK.ids"> <input type="hidden" id="clriId" name="clriId">
+
+					<div id="divIsen" class="sigss-div sigss-float-left"><div id="divAvisosPaciente" class="layout-row sigss-container--horizontal" style="margin-left: 130px; margin-bottom: -12px"><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar se está no cadastro de PPDC" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoPpdc"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar vacinas atrasadas" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoVacina"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar se possui alergias" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoAlergia"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar citopatológico atrasado" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoCito"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar risco cardiovascular" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoCardio"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Verificar se está na lista de espera" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-avisoLies"></span><span class="ui-button-text"></span></button><button type="button" class="sgs-icon-button-isen sgs-button" title="Verificar Consumo Alimentar"><i class="mv-basico dp14">alimento</i></button><button type="button" class="sgs-icon-button-isen sgs-button" title="Verificar Histórico Antropometrico"><i class="mv-hosp dp14">circunferencia_abd</i></button></div>
+						<label>Usuário do Serviço </label> <select id="trie.usuarioServico.isenPK" name="trie.usuarioServico.isenPK" class="sigss-chosen sigss-peso chzn-done" size-expand="75" tabindex="1" style="display: none;">
+							<option value="">...</option>
+						</select><div id="trie_usuarioServico_isenPK_chzn" class="chzn-container chzn-container-single" style="width: 533px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 606.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="trie_usuarioServico_isenPK_chzn_search" name="trie_usuarioServico_isenPK_chzn_search" type="search" maxlength="50" autocomplete="off" style="width: 571.8px;"></div><ul class="chzn-results"><li id="trie_usuarioServico_isenPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+					<button type="button" class="btn-small-frame ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-plusthick"></span><span class="ui-button-text"></span></button><input type="hidden" class="sigss-hidden-pk" id="isenPK" name="isenPK"></div>
+
+					<div class="sigss-div sigss-float-clear sigss-float-left">
+						<label title="Não Identificado no Acolhimento">Usuário
+							do Serviço</label> <input type="text" id="isen.cod" name="isen.cod" class="sigss-leitura sigss-negado" title="Não Identificado no Acolhimento" readonly="readonly"> <input type="text" id="isen.nome" name="isen.nome" class="sigss-leitura sigss-negado" title="Não Identificado no Acolhimento" readonly="readonly">
+					</div>
+
+					<div class="sigss-div sigss-float-left">
+						<label>Idade</label> <input type="text" id="isen.idade" name="isen.idade" class="sigss-leitura sigss-negado" style="width: 205px" readonly="readonly"> <input type="hidden" id="isen.idadeAnos" name="isen.idadeAnos" class="sigss-leitura sigss-negado" readonly="readonly"> <input type="hidden" id="isen.isenPessoaDeficiente" name="isen.isenPessoaDeficiente" class="sigss-leitura sigss-negado" readonly="readonly">
+					</div>
+					<div class="sigss-div sigss-float-left">
+						<label>Sexo</label> <input type="text" id="isen.sexo" name="isen.sexo" class="sigss-leitura sigss-negado" readonly="readonly">
+					</div>
+					<div class="sigss-div sigss-float-left">
+						<label>Dt. Nasc.</label> <input type="text" id="isen.dtNasc" name="isen.dtNasc" class="sigss-leitura sigss-negado" readonly="readonly">
+					</div>
+				</div>
+
+
+				<div class="sigss-div sigss-float-clear">
+					<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+						<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="aba-enfermagem" aria-labelledby="ui-id-3" aria-selected="true"><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#aba-enfermagem" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-3">Enfermagem</a></li>
+					</ul>
+
+					<div id="aba-enfermagem" aria-labelledby="ui-id-3" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-expanded="true" aria-hidden="false">
+
+                        <div id="btnNotificacaoImpactoAPITriagemDiv" class="sigss-oculta">
+                            <a id="btnNotificacaoImpactoAPITriagem" name="btnNotificacaoImpactoAPITriagem" target="_blank">
+                                <button type="button" class="layout-column sgs-button sgs-text-icon-button btn-quadrado blink-border color-red">
+                                    <i class="mv-basico dp36">alerta_usuario</i>
+                                    Alerta de paciente
+                                </button>
+                            </a>
+                        </div>
+
+						<div class="sigss-float-left">
+							<div class="sigss-div sigss-float-clear">
+								<div class="sigss-float-left">
+									<label>Data</label> <input type="text" id="trie.trieData" name="trie.trieData" class="sigss-data sigss-leitura sigss-negado" readonly="readonly">
+								</div>
+								<div class="sigss-float-left">
+									<label>Hora</label> <input type="text" id="trie.trieHora" name="trie.trieHora" class="sigss-hora sigss-leitura sigss-negado" readonly="readonly">
+								</div>
+								<div id="divManchester" class="sigss-div sigss-float-left">
+									<button type="button" name="btnManchester" class="btn-small btn-manchester ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon-manchester"></span><span class="ui-button-text">Classificação
+										de Risco</span></button>
+								</div>
+								<div id="divReguarDor" class="sigss-div sigss-float-left" style="padding-top: 8px;">
+									<button type="button" name="btnReguaDor" class="btn-small btn-reguaDor ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon-reguaDor"></span><span class="ui-button-text">Régua da Dor</span></button>
+								</div>
+                                <div id="btnMarcadorConsumoAlimentarDiv" class="sigss-div sigss-float-left" style="padding-top: 8px;">
+                                    <button type="button" name="btnMarcadorConsumoAlimentarTriagem" class="btn-small btn-alimentar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="btnMarcadorConsumoAlimentarTriagem" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon-alimentar"></span><span class="ui-button-text">Consumo Alimentar</span></button>
+                                </div>
+							<div id="tarjaClassificacaoRisco" class="sigss-div">
+								<label id="lblClassificacaoRisco"> </label>
+							</div>
+
+							<div id="dadosUsuario">
+
+								<div class="sigss-div sigss-float-clear">
+                                    <div class="sigss-div sigss-float-left">
+                                        <div class="sigss-float-">
+                                            <label>Temperatura (C)</label> <input type="text" id="trie.trieTemperatura" name="trie.trieTemperatura" class="sigss-decimal" maxlength="5" tabindex="2">
+                                        </div>
+
+                                        <div id="divDUM" class="sigss-float-clear sigss-oculta" name="divDUM">
+                                            <div class="sigss-div sigss-float-left">
+                                                <label>DUM</label>
+                                                <input type="hidden" class="sigss-limpar" function="agcoData">
+                                                <input type="hidden" id="dataDum" name="dataDUM" value="10/07/2026">
+                                                <input type="text" id="agcoData" name="agcoData" value="10/07/2026" class="sigss-data sigss-leitura sigss-desativado" readonly="readonly">
+                                            </div>
+                                            <div class="sigss-div sigss-float-left">
+                                                <label>IMC Gestacional</label>
+                                                <input id="imcGestante" name="imcGestante" type="text" class="sigss-leitura sigss-desativado" readonly="readonly">
+                                            </div>
+                                            <div class="sigss-div sigss-float-left">
+                                                <label class="calcDesc">Resultado do IMC Gestacional</label>
+                                                <label id="imcGestPercent" class="sigss-field__input">
+                                            </label></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+								<div class="sigss-div sigss-float-clear">
+									<div class="sigss-float-left">
+										<label>Peso</label> <input type="text" id="trie.triePeso" name="trie.triePeso" class="sigss-decimal" maxlength="7" tabindex="3">
+									</div>
+									<div class="sigss-float-left">
+										<label>Peso(em)</label> <select id="trie.medidaPeso.mediPK" name="trie.medidaPeso.mediPK" class="sigss-chosen sigss-peso chzn-done" size-expand="75" tabindex="4" style="display: none;">
+											<option value="">...</option>
+										<option value="1-1">kg — Quilograma(s)</option></select><div id="trie_medidaPeso_mediPK_chzn" class="chzn-container chzn-container-single" style="width: 65px;"><a href="javascript:void(0)" class="chzn-single"><span>kg — Quilograma(s)</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 138.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="trie_medidaPeso_mediPK_chzn_search" name="trie_medidaPeso_mediPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 103.8px;"></div><ul class="chzn-results"><table><thead><tr class="tr-thead-chosen" style="display: list-item;"><th><div style="width:25px; " title=" "> </div></th><th><div style="width:90px; padding-left: 5px;" title=" "> </div></th></tr></thead><tbody><tr id="trie_medidaPeso_mediPK_chzn_o_0" class="sigss-tr-chosen active-result" style=""><td><div title="...">...</div></td></tr><tr id="trie_medidaPeso_mediPK_chzn_o_1" class="sigss-tr-chosen active-result result-selected" style=""><td><div title="kg — Quilograma(s)">kg — Quilograma(s)</div></td></tr></tbody></table></ul></div></div>
+									<input type="hidden" class="sigss-hidden sigss-negado" name="trie_medidaPeso_mediPK_isPopulate" value=""></div>
+									<div class="sigss-float-left">
+										<label>Altura</label> <input type="text" id="trie.trieAltura" name="trie.trieAltura" tabindex="5">
+									</div>
+									<div class="sigss-float-left">
+										<label>Altura(em)</label> <select id="trie.medidaAltura.mediPK" name="trie.medidaAltura.mediPK" class="sigss-chosen sigss-altura chzn-done" size-expand="75" tabindex="6" style="display: none;">
+											<option value="">...</option>
+										<option value="3-1">m — Metro(s)</option></select><div id="trie_medidaAltura_mediPK_chzn" class="chzn-container chzn-container-single" style="width: 65px;"><a href="javascript:void(0)" class="chzn-single"><span>m — Metro(s)</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 138.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="trie_medidaAltura_mediPK_chzn_search" name="trie_medidaAltura_mediPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 103.8px;"></div><ul class="chzn-results"><table><thead><tr class="tr-thead-chosen" style="display: list-item;"><th><div style="width:25px; " title=" "> </div></th><th><div style="width:90px; padding-left: 5px;" title=" "> </div></th></tr></thead><tbody><tr id="trie_medidaAltura_mediPK_chzn_o_0" class="sigss-tr-chosen active-result" style=""><td><div title="...">...</div></td></tr><tr id="trie_medidaAltura_mediPK_chzn_o_1" class="sigss-tr-chosen active-result result-selected" style=""><td><div title="m — Metro(s)">m — Metro(s)</div></td></tr></tbody></table></ul></div></div>
+									<input type="hidden" class="sigss-hidden sigss-negado" name="trie_medidaAltura_mediPK_isPopulate" value=""></div>
+                                    <div id="divImcNaoGestante" name="divImcNaoGestante">
+                                        <div class="sigss-float-left">
+                                            <label>IMC</label> <input type="text" id="imc.resultado" name="imc.resultado" class="sigss-leitura sigss-negado" readonly="readonly">
+                                        </div>
+                                        <div class="sigss-float-left trieCalcDesc">
+                                            <label id="imc.descricao">Resultado do IMC</label> <label id="imc.percentil"></label>
+                                        </div>
+                                    </div>
+								</div>
+
+
+
+								<div class="sigss-div sigss-float-clear ">
+									<div class=" sigss-float-left">
+										<label>Cintura (cm)</label> <input type="text" id="trie.trieCintura" name="trie.trieCintura" class="sigss-soNumero" maxlength="3" tabindex="7">
+									</div>
+									<div class="sigss-float-left">
+										<label>Quadril (cm)</label> <input type="text" id="trie.trieQuadril" name="trie.trieQuadril" class="sigss-soNumero" maxlength="3" tabindex="8">
+									</div>
+									<div class="sigss-float-left">
+										<label>Abdómen (cm)</label> <input type="text" id="trie.trieAbdomen" name="trie.trieAbdomen" class="sigss-soNumero " maxlength="3" tabindex="9">
+									</div>
+									<div class="sigss-float-left ">
+										<label>RCQ</label> <input type="text" id="rcq.resultado" name="rcq.resultado" class="sigss-leitura sigss-negado" readonly="readonly">
+									</div>
+									<div class=" sigss-float-left trieCalcDesc">
+										<label id="rcq.descricao">Resultado do RCQ</label>
+									</div>
+								</div>
+
+
+								<div class="sigss-div sigss-float-clear">
+
+									<div class="sigss-float-left">
+										<fieldset>
+											<legend>
+												<label>Pressão Arterial (mmHg)</label>
+											</legend>
+											<div class="sigss-float-clear">
+												<label>Sistólica</label> <input type="text" name="trie.triePressaoSistolica" id="trie.triePressaoSistolica" class="sigss-soNumero" maxlength="3" tabindex="10"> <label>Diastólica</label> <input type="text" name="trie.triePressaoDiastolica" id="trie.triePressaoDiastolica" class="sigss-soNumero" maxlength="3" tabindex="11">
+											</div>
+										</fieldset>
+									</div>
+
+
+									<div class="sigss-float-left">
+										<fieldset>
+											<legend>
+												<label>Glicemia (mg/dL)</label>
+											</legend>
+											<div class="sigss-float-clear">
+												<label>Capilar</label> <input type="text" name="trie.trieGlcCapilar" id="trie.trieGlcCapilar" class="sigss-decimal" maxlength="6" tabindex="12"> <label>Pós
+													Prandial</label> <input type="text" name="trie.trieGlcPrandial" id="trie.trieGlcPrandial" class="sigss-decimal" maxlength="6" tabindex="13">
+											</div>
+										</fieldset>
+									</div>
+
+									<div class="sigss-float-left">
+										<div class=" sigss-float-clear">
+											<label>Perímetro cef. (cm)</label> <input type="text" id="trie.triePerimetroCefalico" name="trie.triePerimetroCefalico" class="sigss-soNumero" maxlength="3" tabindex="14">
+										</div>
+										<div class="sigss-float-clear" title="Batimentos Por Minuto">
+											<label>Pulso (bpm)</label> <input type="text" id="trie.triePulso" name="trie.triePulso" class="sigss-soNumero" maxlength="3" tabindex="15">
+										</div>
+									</div>
+
+									<div class="sigss-float-left">
+										<div class="sigss-float-clear" title="Repetições Por Minuto">
+											<label>F.R. (rpm)</label> <input type="text" id="trie.trieFR" name="trie.trieFR" class="sigss-soNumero" maxlength="3" tabindex="16">
+										</div>
+										<div class="sigss-float-clear">
+											<label>Sat O2 (%)</label> <input type="text" id="trie.trieSatO2" name="trie.trieSatO2" class="sigss-soNumero" maxlength="3" tabindex="17">
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="sigss-div sigss-float-clear">
+								<label class="sigss-float-left" title="Máximo 1000 Caracteres">Observação<b id="num_trie.trieObs"> </b></label>
+								<span id="spanObsTriagem" class="sigss-float-left"></span>
+
+								<div id="divPmanId" class="sigss-div sigss-float-left sigss-oculta" style="margin-top: -2px;">
+									<span id="atco.pmanId" name="atco.pmanId"></span>
+								</div>
+
+								<textarea id="trie.trieObs" name="trie.trieObs" class="sigss-textarea-limite sigss-float-clear" maxlength="1000" tabindex="18"></textarea>
+							</div>
+
+							<div class="sigss-div sigss-float-clear">
+								<label>Profissional</label> <select id="trie.profissional.prsaPK" name="trie.profissional.prsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 586px; display: none;" tabindex="19">
+									<option value="">...</option>
+								</select><div id="trie_profissional_prsaPK_chzn" class="chzn-container chzn-container-single" style="width: 586px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 584.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="trie_profissional_prsaPK_chzn_search" name="trie_profissional_prsaPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 549.8px;"></div><ul class="chzn-results"><li id="trie_profissional_prsaPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+							<input type="hidden" class="sigss-hidden sigss-negado" name="trie_profissional_prsaPK_isPopulate" value=""></div>
+
+							<div id="div_prre" class="sigss-div sigss-float-clear sigss-float-left">
+								<div class="sigss-div sigss-float-clear">
+									<label>Procedimento(s) Realizado(s)</label> <select disabled="true" id="prre.procedimento.prciPK" name="prre.procedimento.prciPK" class="sigss-chosen exam-select2 sigss-autocomplete chzn-done" size-expand="176" tabindex="20" style="display: none;">
+										<option value="">...</option>
+									</select><div id="prre_procedimento_prciPK_chzn" class="chzn-container chzn-container-single chzn-disabled" style="width: 586px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 760.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="prre_procedimento_prciPK_chzn_search" name="prre_procedimento_prciPK_chzn_search" type="search" maxlength="50" autocomplete="off" disabled="" style="width: 725.8px;"></div><ul class="chzn-results"><li id="prre_procedimento_prciPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+								</div>
+								<div id="div_btprc" class="sigss-div sigss-float-right">
+                                    <button type="button" name="grava_prre" class="btn-gravar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-disk"></span><span class="ui-button-text">Adicionar</span></button>
+                                </div>
+								<div id="divAdmMedicamento" class="sigss-div sigss-float-clear sigss-float-left sigss-oculta">
+									<label style="width: 328px">Tipo de
+										Administração<i>*</i>
+									</label> <select id="prreco.prrecoTipoAdmMedicamento" name="prreco.prrecoTipoAdmMedicamento" class="sigss-chosen chzn-done" tabindex="21" style="display: none;">
+									</select><div id="prreco_prrecoTipoAdmMedicamento_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 330px;"><a href="javascript:void(0)" class="chzn-single chzn-default"><span>Selecione uma opção</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 328.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="prreco_prrecoTipoAdmMedicamento_chzn_search" name="prreco_prrecoTipoAdmMedicamento_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 293.8px;"></div><ul class="chzn-results"></ul></div></div>
+
+									<button type="button" id="btnAddTipoAdmMedicamento" name="btnAddTipoAdmMedicamento" class="btn-small btn-adicionar sigss-request-tabindex ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" title="Incluir tipo de Administração" role="button" aria-disabled="false" tabindex="22"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-plusthick"></span><span class="ui-button-text">Incluir Via de
+										Adm</span></button>
+									<div id="div_grid_administracao" class="sigss-float-clear">
+										<div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_administracao" dir="ltr" style="width: 450px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_administracao"></div><div class="loading ui-state-default ui-state-active" id="load_grid_administracao" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_administracao" style="width: 450px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 450px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:432px" role="grid" aria-labelledby="gbox_grid_administracao" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_administracao_descricao" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 367px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_administracao_descricao" class="ui-jqgrid-sortable">Descrição<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_administracao_btnExcluirAdministracao" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 55px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_administracao_btnExcluirAdministracao" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 126px; width: 450px;"><div style="position:relative;"><div></div><table id="grid_administracao" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="false" aria-labelledby="gbox_grid_administracao" class="ui-jqgrid-btable" style="width: 432px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:367px;"></td><td role="gridcell" style="height:0px;width:55px;"></td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_administracao">&nbsp;</div></div>
+									</div>
+								<input type="hidden" class="sigss-hidden sigss-negado" name="prreco_prrecoTipoAdmMedicamento_isPopulate" value=""></div>
+								<div class="sigss-float-clear">
+									<br>
+									<div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_busca_prci" dir="ltr" style="width: 940px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_busca_prci"></div><div class="loading ui-state-default ui-state-active" id="load_grid_busca_prci" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_busca_prci" style="width: 940px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 940px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:922px" role="grid" aria-labelledby="gbox_grid_busca_prci" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_busca_prci_prrePK.idp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prrePK.idp" class="ui-jqgrid-sortable">prrePK.idp<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prrePK.ids" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prrePK.ids" class="ui-jqgrid-sortable">prrePK.ids<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prciPK.idp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prciPK.idp" class="ui-jqgrid-sortable">prciPK.idp<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prciPK.ids" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prciPK.ids" class="ui-jqgrid-sortable">prciPK.ids<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prciCodigo" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 146px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prciCodigo" class="ui-jqgrid-sortable">Código<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prciNome" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 731px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prciNome" class="ui-jqgrid-sortable">Procedimento<span class="s-ico" style=""><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prreData" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 30px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prreData" class="ui-jqgrid-sortable">Data<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_prreHora" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 30px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_prreHora" class="ui-jqgrid-sortable">Hora<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_busca_prci_btnExclui" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 30px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_busca_prci_btnExclui" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 215px; width: 940px;"><div style="position:relative;"><div></div><table id="grid_busca_prci" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="false" aria-labelledby="gbox_grid_busca_prci" class="ui-jqgrid-btable" style="width: 922px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:146px;"></td><td role="gridcell" style="height:0px;width:731px;"></td><td role="gridcell" style="height:0px;width:30px;display:none;"></td><td role="gridcell" style="height:0px;width:30px;display:none;"></td><td role="gridcell" style="height:0px;width:30px;"></td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_busca_prci">&nbsp;</div><div id="grid_prci_pager" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr" style="width: 940px;"><div id="pg_grid_prci_pager" class="ui-pager-control" role="group"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table" style="width:100%;table-layout:fixed;height:100%;" role="row"><tbody><tr><td id="grid_prci_pager_left" align="left"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table navtable" style="float:left;table-layout:auto;"><tbody><tr></tr></tbody></table></td><td id="grid_prci_pager_center" align="center" style="white-space: pre; width: 232px;"><table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table"><tbody><tr><td id="first_grid_prci_pager" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-first"></span></td><td id="prev_grid_prci_pager" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-prev"></span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td dir="ltr">Página <input class="ui-pg-input" type="text" size="2" maxlength="7" value="0" role="textbox"> de <span id="sp_1_grid_prci_pager">0</span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td id="next_grid_prci_pager" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-next"></span></td><td id="last_grid_prci_pager" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-end"></span></td></tr></tbody></table></td><td id="grid_prci_pager_right" align="right"><div dir="ltr" style="text-align:right" class="ui-paging-info">Nenhum registro</div></td></tr></tbody></table></div></div></div>
+									
+								</div>
+							</div>
+							<div class="sigss-div sigss-float-clear">
+								<input type="checkbox" id="isAgendarConsulta" name="isAgendarConsulta" class="sigss-ui-checkbox ui-helper-hidden-accessible" tabindex="23"><span class="ui-checkbox ui-checkbox-checked ui-checkbox-state-checked"></span> <label for="isAgendarConsulta" class="ui-checkbox ui-checkbox-checked ui-checkbox-state-checked">Agendar consulta médica ?</label>
+							</div>
+						</div>
+
+
+
+						<div id="div-fieldset-alergia" class="sigss-div sigss-float-clear">
+							<fieldset id="fieldset-alergia">
+								<legend class="center">
+									<label>Alergias</label>
+								</legend>
+
+								<div class="sigss-div sigss-float-left">
+									<div class="sigss-div sigss-float-clear">
+										<input type="checkbox" id="is.isenAlergMedicamentos" name="is.isenAlergMedicamentos" class="sigss-ui-checkbox trieAlergia ui-helper-hidden-accessible" tabindex="24"><span class="ui-checkbox"></span> <label for="is.isenAlergMedicamentos" class="ui-checkbox" title="Máximo 250 Caracteres">Medicamentos<b id="num_isen.isenAlergMedicamentos"> </b></label>
+									</div>
+									<textarea class="trieAlergias" id="isen.isenAlergMedicamentos" name="isen.isenAlergMedicamentos" maxlength="250" tabindex="25"></textarea>
+								</div>
+
+								<div class="sigss-div sigss-float-left">
+									<div class="sigss-div sigss-float-clear">
+										<input type="checkbox" id="is.isenAlergAlimentos" name="is.isenAlergAlimentos" class="sigss-ui-checkbox trieAlergia ui-helper-hidden-accessible" tabindex="26"><span class="ui-checkbox"></span> <label for="is.isenAlergAlimentos" class="ui-checkbox" title="Máximo 250 Caracteres">Alimentos<b id="num_isen.isenAlergAlimentos"> </b></label>
+									</div>
+									<textarea class="trieAlergias" id="isen.isenAlergAlimentos" name="isen.isenAlergAlimentos" maxlength="250" tabindex="27"></textarea>
+								</div>
+
+								<div class="sigss-div sigss-float-left">
+									<div class="sigss-div sigss-float-clear">
+										<input type="checkbox" id="is.isenAlergElementosQuimicos" name="is.isenAlergElementosQuimicos" class="sigss-ui-checkbox trieAlergia ui-helper-hidden-accessible" tabindex="28"><span class="ui-checkbox"></span> <label for="is.isenAlergElementosQuimicos" class="ui-checkbox" title="Máximo 250 Caracteres">Elementos
+											Químicos<b id="num_isen.isenAlergElementosQuimicos"> </b></label>
+									</div>
+									<textarea class="trieAlergias" id="isen.isenAlergElementosQuimicos" name="isen.isenAlergElementosQuimicos" maxlength="250" tabindex="29"></textarea>
+								</div>
+
+								<div class="sigss-div sigss-float-left">
+									<div class="sigss-div sigss-float-clear">
+										<input type="checkbox" id="is.isenAlergMicroOrganismos" name="is.isenAlergMicroOrganismos" class="sigss-ui-checkbox trieAlergia ui-helper-hidden-accessible" tabindex="30"><span class="ui-checkbox"></span> <label for="is.isenAlergMicroOrganismos" class="ui-checkbox" title="Máximo 250 Caracteres">Micro Organismos<b id="num_isen.isenAlergMicroOrganismos"> </b></label>
+									</div>
+									<textarea class="trieAlergias" id="isen.isenAlergMicroOrganismos" name="isen.isenAlergMicroOrganismos" maxlength="250" tabindex="31"></textarea>
+								</div>
+
+								<div class="sigss-div sigss-float-left">
+									<div class="sigss-div sigss-float-clear">
+										<input type="checkbox" id="is.isenAlergOutros" name="is.isenAlergOutros" class="sigss-ui-checkbox trieAlergia ui-helper-hidden-accessible" tabindex="32"><span class="ui-checkbox"></span> <label for="is.isenAlergOutros" class="ui-checkbox" title="Máximo 250 Caracteres">Outros<b id="num_isen.isenAlergOutros"> </b></label>
+									</div>
+									<textarea class="trieAlergias" id="isen.isenAlergOutros" name="isen.isenAlergOutros" maxlength="250" tabindex="33"></textarea>
+								</div>
+
+								<div class="sigss-field sigss-flex-100">
+									<div class="sigss-div sigss-float-clear">
+										<div id="divBtnAlergias" name="divBtnAlergias" style="display: block; margin: 0 auto; width: 18%;">
+											<button type="button" name="btnIsenAlergias" id="btnIsenAlergias" class="btn-normal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Alergias do
+												Usuário de Serviço</span></button>
+										</div>
+									</div>
+								</div>
+
+							</fieldset>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="sigss-div sigss-float-clear" style="padding-top: 10px;">
+					<button type="button" name="btnAlterar" class="btn-alterar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary ui-button-disabled ui-state-disabled sigss-negado" role="button" aria-disabled="true" disabled=""><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-pencil"></span><span class="ui-button-text">Alterar</span></button>
+					<button type="button" name="btnGravar" class="btn-gravar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-disk"></span><span class="ui-button-text">Gravar</span></button>
+					<button type="button" name="btnCancelar" class="btn-cancelar ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-close"></span><span class="ui-button-text">Cancelar</span></button>
+					<button type="button" name="btnImprimirEtiqueta" id="btnImprimirEtiqueta" class="btn-imprimir ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-print"></span><span class="ui-button-text">Imprimir Etiqueta </span></button>
+					<button type="button" id="btnAgendarConsulta" class="btn-agenda ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" style="margin-left: 20px;" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-note"></span><span class="ui-button-text">Consulta</span></button>
+					<button type="button" id="btnImprimirFAM" class="btn-imprimir ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-print"></span><span class="ui-button-text">Imprimir
+						FAA</span></button>
+					
+					
+                    <div class="gravado-por">
+                        <strong> <label id="gravado-em">Gravado em
+                                DATA/HORA</label>
+                        </strong> <strong style="margin-left: 5px;"> <label id="gravado-por">por: USUARIO DO SISTEMA</label>
+                        </strong>
+                    </div>
+				</div>
+			
+		</div></form>
+
+		
+
+		
+
+		
+
+	</div>
+
+	</div></main>
+
+                <a id="popup" name="popup" href="http://sigss.betim.mg.gov.br/sigss/correioInterno.jsp" class="popup sigss-oculta pointer" style="display: none;">
+                    <div class="sigss-container layout-row sigss-container--center">
+                        <i class="mv-basico dp36 alert-icon">aviso</i>
+                        <span>Uma ou mais mensagens urgentes não lidas. Verifique sua caixa de entrada no correio interno!</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <footer id="sigss-footer" class="sigss-viewport-footer layout-row " media="print">
+            <div class="layout-flex"></div>
+
+            
+
+            
+                <span> PREFEITURA MUNICIPAL DE BETIM </span>
+            
+
+        </footer>
+
+        <div id="dialog-menuTouch" title="Menu Touch Screen" class="sigss-oculta">
+            <div class="demo">
+                <div class="sigss-div sigss-float-clear">
+                    <button type="button" name="btnTouchVoltar" id="btnTouchVoltar">Voltar</button>
+                </div>
+                <ul id="list" class="image-grid">
+                    
+                    </ul>
+                </div>
+            </div>
+            
+
+        <script type="text/javascript" src="./fila_files/button.js.download"></script>
+        <script type="text/javascript" src="./fila_files/viewport.js.download"></script>
+        <script type="text/javascript" src="./fila_files/menu.js.download"></script>
+
+        <script>
+            // pega o horario do servidor
+            get('common/dataHora').then(dataHora => {
+                let brDataHora = moment(dataHora);
+
+                // evita de ficar o primeiro segundo sem exibir nada
+                $('#horaAtual').html(brDataHora.format('DD/MM/YYYY HH:mm:ss'))
+
+                // atualiza a hora exibida no header
+                setInterval(() => {
+                    brDataHora = moment(brDataHora).add(1, 's');
+                    $('#horaAtual').html(brDataHora.format('DD/MM/YYYY HH:mm:ss'))
+                }, 1000);
+            });
+        </script>
+    
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-4" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-4" class="ui-dialog-title">Imprimir</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dailog-print-grid-busca" class="sigss-oculta ui-dialog-content ui-widget-content" style="display: block;">
+                <input type="hidden" id="printGridNome" name="printGridNome" value="grid_busca">
+                <div class="sigss-div">
+                    <label>SIGSS | Sistema Integrado de Gestão de Serviços de Saúde</label>
+                <input type="text" id="printGridTitulo" name="printGridTitulo" style="width: 370px;">
+            </div>
+
+            <div class="sigss-div sigss-float-left">
+                <label>Saida</label>
+                <select id="printGridFormatoSaida" name="printGridFormatoSaida" class="sigss-chosen chzn-done" style="width: 160px; display: none;">
+                    <option value="pdf">PDF</option>
+                    <option value="xls">Planilha Eletrônica (xls)</option>
+                    <option value="rtf">Documento de Texto (doc)</option>
+                </select><div id="printGridFormatoSaida_chzn" class="chzn-container chzn-container-single" style="width: 160px;"><a href="javascript:void(0)" class="chzn-single"><span>PDF</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 158.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="printGridFormatoSaida_chzn_search" name="printGridFormatoSaida_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 123.8px;"></div><ul class="chzn-results"><li id="printGridFormatoSaida_chzn_o_0" class="active-result result-selected" style="" title="PDF">PDF</li><li id="printGridFormatoSaida_chzn_o_1" class="active-result" style="" title="Planilha Eletrônica (xls)">Planilha Eletrônica (xls)</li><li id="printGridFormatoSaida_chzn_o_2" class="active-result" style="" title="Documento de Texto (doc)">Documento de Texto (doc)</li></ul></div></div>
+            </div>
+
+            <div class="sigss-div sigss-float-left">
+                <label>Imprimir Zebrado</label>
+                <select id="printGridZebrado" name="printGridZebrado" class="sigss-chosen chzn-done" style="width: 110px; display: none;">
+                    <option value="SIM">SIM</option>
+                    <option value="NÃO">NÃO</option>
+                </select><div id="printGridZebrado_chzn" class="chzn-container chzn-container-single" style="width: 110px;"><a href="javascript:void(0)" class="chzn-single"><span>SIM</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 108.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="printGridZebrado_chzn_search" name="printGridZebrado_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 73.8px;"></div><ul class="chzn-results"><li id="printGridZebrado_chzn_o_0" class="active-result result-selected" style="" title="SIM">SIM</li><li id="printGridZebrado_chzn_o_1" class="active-result" style="" title="NÃO">NÃO</li></ul></div></div>
+            </div>
+
+            <div class="sigss-div sigss-float-left">
+                <label>Totalizador?</label>
+                <select id="printGridTotalizadorColuna" bame="printGridTotalizadorColuna" class="sigss-chosen chzn-done" style="width: 80px; display: none;">
+                    <option value="SIM">SIM</option>
+                    <option value="NÃO">NÃO</option>
+                </select><div id="printGridTotalizadorColuna_chzn" class="chzn-container chzn-container-single" style="width: 80px;"><a href="javascript:void(0)" class="chzn-single"><span>SIM</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 78.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="printGridTotalizadorColuna_chzn_search" name="printGridTotalizadorColuna_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 43.8px;"></div><ul class="chzn-results"><li id="printGridTotalizadorColuna_chzn_o_0" class="active-result result-selected" style="" title="SIM">SIM</li><li id="printGridTotalizadorColuna_chzn_o_1" class="active-result" style="" title="NÃO">NÃO</li></ul></div></div>
+            </div>
+        </div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Fechar</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Imprimir</span></button></div></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-5" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-5" class="ui-dialog-title">Informações</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="helpPrioridade" class="sigss-oculta ui-dialog-content ui-widget-content" style="display: block;">
+							<h1>Tipo de prioridade</h1>
+							<br>
+							<h2>
+								<img width="80" height="17" class="icone_img" src="./fila_files/normal.svg" title="Preferencial">: "Normal"
+							</h2>
+							<h2>
+								<img width="80" height="17" class="icone_img" src="./fila_files/preferencial_updated.svg" title="Preferencial">:
+								"Preferencial"
+							</h2>
+							<h2>
+								<img width="80" height="17" class="icone_img" src="./fila_files/idoso80.svg" title="Preferencial">:
+								"Preferencial +80 anos"
+							</h2>
+							<p>
+							A prioridade só irá aparecer para usuários com senha gerada durante o cadastro do acolhimento
+							</p>
+						</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Fechar</span></button></div></div></div><div class="ui-widget ui-widget-content ui-corner-all ui-jqdialog" id="alertmod_grid_busca_prci" dir="ltr" tabindex="-1" role="dialog" aria-labelledby="alerthd_grid_busca_prci" aria-hidden="true" style="width: 200px; height: auto; z-index: 950; overflow: hidden; top: 371.5px; left: 668px;"><div class="ui-jqdialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" id="alerthd_grid_busca_prci" style="cursor: move;"><span class="ui-jqdialog-title" style="float: left;">Aviso</span><a href="javascript:void(0)" class="ui-jqdialog-titlebar-close ui-corner-all" style="right: 0.3em;"><span class="ui-icon ui-icon-closethick"></span></a></div><div class="ui-jqdialog-content ui-widget-content" id="alertcnt_grid_busca_prci"><div>Por favor, selecione um registro</div><span tabindex="0"><span tabindex="-1" id="jqg_alrt"></span></span></div><div class="jqResize ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable" tabindex="-1" role="dialog" aria-labelledby="ui-id-6" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-6" class="ui-dialog-title">Transferêcia de Agenda</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dialog-transferencia-agenda" class="sigss-invisivel ui-dialog-content ui-widget-content sigss-enter-emula-tab">
+			<form id="form-transferencia-agenda">
+
+				<div class="sigss-div sigss-float-clear sigss-float-left">
+					<label>Unidade de Saúde de ORIGEM</label> <input type="text" id="unidadeSaude" name="unidadeSaude" class="sigss-leitura sigss-negado" style="width: 300px" readonly="readonly">
+				</div>
+
+				<div class="sigss-div sigss-float-left">
+					<label>Profissional de ORIGEM</label> <input type="text" id="profissional" name="profissional" class="sigss-leitura sigss-negado" style="width: 300px" readonly="readonly">
+				</div>
+
+				<div class="sigss-div sigss-float-left">
+					<label>Data agendada</label> <input type="text" id="dataAgendada" name="dataAgendada" class="sigss-data sigss-leitura sigss-negado" readonly="readonly">
+				</div>
+
+
+
+
+				<div class="sigss-div sigss-float-clear sigss-float-left">
+					<label>Unidade de Saúde</label> <select id="agtr.unidadeSaude.unsaPK" name="agtr.unidadeSaude.unsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 347px; display: none;" tabindex="1">
+						<option value="">...</option>
+					</select><div id="agtr_unidadeSaude_unsaPK_chzn" class="chzn-container chzn-container-single" style="width: 347px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 345.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="agtr_unidadeSaude_unsaPK_chzn_search" name="agtr_unidadeSaude_unsaPK_chzn_search" type="search" maxlength="50" autocomplete="off" style="width: 310.8px;"></div><ul class="chzn-results"><li id="agtr_unidadeSaude_unsaPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+				</div>
+
+				<div class="sigss-div sigss-float-left">
+					<label>Profissional</label> <select id="agtr.profissional.prsaPK" name="agtr.profissional.prsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 347px; display: none;" tabindex="2">
+						<option value="">...</option>
+					</select><div id="agtr_profissional_prsaPK_chzn" class="chzn-container chzn-container-single" style="width: 347px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 345.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="agtr_profissional_prsaPK_chzn_search" name="agtr_profissional_prsaPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 310.8px;"></div><ul class="chzn-results"><li id="agtr_profissional_prsaPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+				<input type="hidden" class="sigss-hidden sigss-negado" name="agtr_profissional_prsaPK_isPopulate" value=""></div>
+
+				<div class="sigss-div sigss-float-clear sigss-float-left">
+					<label>Data</label> <input type="text" id="agtr.agtrData" name="agtr.agtrData" class="sigss-data sigss-calendario hasDatepicker" tabindex="3"><img class="ui-datepicker-trigger" src="./fila_files/calendar.png" alt="Exibir calendário" title="Exibir calendário">
+				</div>
+
+
+				<div class="sigss-div sigss-float-left" style="float: right; padding-top: 10px;">
+					<button type="button" id="btnTransferir" class="btn-transferir ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false" tabindex="4"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-transfer-e-w"></span><span class="ui-button-text">Transferir</span></button>
+				</div>
+
+				<div class="sigss-div sigss-float-clear">
+					<div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_transferencia_agenda" dir="ltr" style="width: 700px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_transferencia_agenda"></div><div class="loading ui-state-default ui-state-active" id="load_grid_transferencia_agenda" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_transferencia_agenda" style="width: 700px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 700px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:682px" role="grid" aria-labelledby="gbox_grid_transferencia_agenda" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_transferencia_agenda_agtrIdp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_agtrIdp" class="ui-jqgrid-sortable">agtrIdp<span class="s-ico" style=""><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_transferencia_agenda_agtrIds" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_agtrIds" class="ui-jqgrid-sortable">agtrIds<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_transferencia_agenda_agtrPK" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 75px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_agtrPK" class="ui-jqgrid-sortable">Código<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_transferencia_agenda_agtrHora" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 50px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_agtrHora" class="ui-jqgrid-sortable">Hora<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_transferencia_agenda_isenCod" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 100px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_isenCod" class="ui-jqgrid-sortable">Código Pac. <span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_transferencia_agenda_entiNome" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 437px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_transferencia_agenda_entiNome" class="ui-jqgrid-sortable">Usuário do Serviço<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 210px; width: 700px;"><div style="position:relative;"><div></div><table id="grid_transferencia_agenda" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="false" aria-labelledby="gbox_grid_transferencia_agenda" class="ui-jqgrid-btable" style="width: 682px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:75px;"></td><td role="gridcell" style="height:0px;width:50px;"></td><td role="gridcell" style="height:0px;width:100px;"></td><td role="gridcell" style="height:0px;width:437px;"></td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_transferencia_agenda">&nbsp;</div><div id="grid_pager_transferencia_agenda" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr" style="width: 700px;"><div id="pg_grid_pager_transferencia_agenda" class="ui-pager-control" role="group"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table" style="width:100%;table-layout:fixed;height:100%;" role="row"><tbody><tr><td id="grid_pager_transferencia_agenda_left" align="left"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table navtable" style="float:left;table-layout:auto;"><tbody><tr></tr></tbody></table></td><td id="grid_pager_transferencia_agenda_center" align="center" style="white-space: pre; width: 232px;"><table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table"><tbody><tr><td id="first_grid_pager_transferencia_agenda" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-first"></span></td><td id="prev_grid_pager_transferencia_agenda" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-prev"></span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td dir="ltr">Página <input class="ui-pg-input" type="text" size="2" maxlength="7" value="0" role="textbox"> de <span id="sp_1_grid_pager_transferencia_agenda">0</span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td id="next_grid_pager_transferencia_agenda" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-next"></span></td><td id="last_grid_pager_transferencia_agenda" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-end"></span></td></tr></tbody></table></td><td id="grid_pager_transferencia_agenda_right" align="right"><div dir="ltr" style="text-align:right" class="ui-paging-info">Nenhum registro</div></td></tr></tbody></table></div></div></div>
+					
+				</div>
+
+			</form>
+		</div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-7" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-7" class="ui-dialog-title">Chamar para Atendimento</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dialog-chamar-atendimento" class="sigss-oculta ui-dialog-content ui-widget-content" style="display: block;">
+			<div class="sigss-container no-padding">
+				<div class="sigss-field">
+					<div id="select-guiche" class="sigss-oculta">
+							<label class="sigss-field__label bold">Selecione a sala / consultório de atendimento</label>
+							<select id="gech.geatGuiche.geguPK" class="sigss-chosen sigss-field__input chzn-done" style="width: 500px; display: none;">
+                                <option value="">...</option>
+                            </select><div id="gech_geatGuiche_geguPK_chzn" class="chzn-container chzn-container-single" style="width: 500px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 500px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="gech_geatGuiche_geguPK_chzn_search" name="gech_geatGuiche_geguPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 492px;"></div><ul class="chzn-results"><li id="gech_geatGuiche_geguPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+					<input type="hidden" class="sigss-hidden sigss-negado" name="gech_geatGuiche_geguPK_isPopulate" value=""></div>
+					<div id="select-sala" class="sigss-sala">
+							<label class="sigss-field__label bold">Informe o local /consultório de atendimento</label>
+							<input class="sigss-field__input" type="text" id="atlc.atlcDesc" name="atlc.atlcDesc" maxlength="15">
+
+					</div>
+				</div>
+				<label>OBS: <i>Caso deseje alterar o local do chamado, clique com o botão direito do Mouse no botão
+						chamar!.</i></label>
+			</div>
+		</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Gravar</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Fechar</span></button></div></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-8" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-8" class="ui-dialog-title">Último Usuário Chamando:</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dialog-ultimo-chamado" class="sigss-oculta ui-dialog-content ui-widget-content" style="display: block;">
+			<div class="sigss-float-left sigss-div">
+				<div>
+					<label id="lblUltimoChamado">USUÁRIO DO
+						SERVIÇO</label>
+				</div>
+				<br>
+				<div>
+					<label>Tempo de Espera:</label> <label id="lblTempoEspera">00:00:00</label>
+				</div>
+			</div>
+			<div class="sigss-float-right" id="idFotoChamado"></div>
+		</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Fechar</span></button></div></div></div><div class="ui-widget ui-widget-content ui-corner-all ui-jqdialog" id="alertmod_grid_transferencia_agenda" dir="ltr" tabindex="-1" role="dialog" aria-labelledby="alerthd_grid_transferencia_agenda" aria-hidden="true" style="width: 200px; height: auto; z-index: 1002; overflow: hidden; top: 371.5px; left: 668px;"><div class="ui-jqdialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" id="alerthd_grid_transferencia_agenda" style="cursor: move;"><span class="ui-jqdialog-title" style="float: left;">Aviso</span><a href="javascript:void(0)" class="ui-jqdialog-titlebar-close ui-corner-all" style="right: 0.3em;"><span class="ui-icon ui-icon-closethick"></span></a></div><div class="ui-jqdialog-content ui-widget-content" id="alertcnt_grid_transferencia_agenda"><div>Por favor, selecione um registro</div><span tabindex="0"><span tabindex="-1" id="jqg_alrt"></span></span></div><div class="jqResize ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-9" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-9" class="ui-dialog-title">Classificação de Risco</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dialogFluxoClassificacao" class="ui-dialog-content ui-widget-content">
+
+    <span>
+        <input type="hidden" id="classificacao">
+    </span>
+
+    <div class="layout-row littleMargin">
+        <div class="layout-column">
+            <div class="layout-column " style="padding-bottom: 7px;">
+                <label>Agrupar por:</label> 
+                <select id="orderBy" class="sigss-chosen chzn-done" style="width: 235px; display: none;">
+                    <option value="qgru.qgruDescricao">Grupo</option>
+                    <option value="quei.queiDescricao">Queixas</option>
+                </select><div id="orderBy_chzn" class="chzn-container chzn-container-single" style="width: 235px;"><a href="javascript:void(0)" class="chzn-single"><span>Grupo</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 233.4px; top: 18px;"><div class="chzn-search"><input class="chzn-input-search" id="orderBy_chzn_search" name="orderBy_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 198.8px;"></div><ul class="chzn-results"><li id="orderBy_chzn_o_0" class="active-result result-selected" style="" title="Grupo">Grupo</li><li id="orderBy_chzn_o_1" class="active-result" style="" title="Queixas">Queixas</li></ul></div></div>
+            </div>
+
+            <div class="layout-column ">
+                <label>Ordenação:</label> 
+                <select id="order" class="sigss-chosen chzn-done" style="width: 235px; display: none;">
+                    <option value="asc">Menor para Maior</option>
+                    <option value="desc">Maior para Menor</option>
+                </select><div id="order_chzn" class="chzn-container chzn-container-single" style="width: 235px;"><a href="javascript:void(0)" class="chzn-single"><span>Menor para Maior</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 233.4px; top: 18px;"><div class="chzn-search"><input class="chzn-input-search" id="order_chzn_search" name="order_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 198.8px;"></div><ul class="chzn-results"><li id="order_chzn_o_0" class="active-result result-selected" style="" title="Menor para Maior">Menor para Maior</li><li id="order_chzn_o_1" class="active-result" style="" title="Maior para Menor">Maior para Menor</li></ul></div></div>
+            </div>
+
+        </div>
+
+        <div class="layout-column littleMargin" style="padding-top: 15px;">
+            <div class="layout-column ">
+                <label id="fluxIsenNome">Usuário do Serviço: </label>
+            </div>
+
+            <div class="layout-column " style="padding-top: 10px;">
+
+                <div class="layout-row">
+                    <div class="layout-column ">
+                        <label id="queiAtual">Queixa: </label>
+                    </div>
+                    <div class="layout-row littleMargin">
+                        <label id="quei"> Não Selecionado</label>
+                    </div>
+
+                    <div class="layout-row littleMargin">
+                        <label id="clriAtual">Classificação de Risco: Não Classificado</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layout-row" style="margin-top: 10px;">
+        <div id="queixasClassificacao" class="layout-column littleMargin"></div>
+        <div id="perguntasClassificacao" class="layout-column littleMargin" style="width: 655px;"></div>
+    </div>
+
+</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" role="button" aria-disabled="false" name="btnGravarClri" id="btnGravarClri"><span class="ui-button-icon-primary ui-icon ui-icon-check"></span><span class="ui-button-text">Gravar</span></button></div></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-10" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-10" class="ui-dialog-title">ALERGIAS DO USUARIO DO SERVIÇO</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="dialog-isenAlergia" style="overflow-x: hidden;" class="ui-dialog-content ui-widget-content">
+		<script type="text/javascript" src="./fila_files/dialog-isenAlergia.js.download"></script>
+
+<div>
+
+    <div id="tabs" class="sigss-tabs ui-tabs ui-widget ui-widget-content ui-corner-all">
+
+      <div class="sigss-container" id="formIsenAlergia" name="formIsenAlergia">
+
+            <div class="sigss-container--horizontal layout-row">
+
+                <div class="sigss-field">
+                    <label class="sigss-field__label obrigatorio">Usuário do Serviço</label>
+                    <input class="sigss-field__input" disabled="" type="text" id="isenNome" maxlength="100">
+                </div>
+
+            </div>
+
+            <div class="sigss-container--horizontal layout-row">
+
+                <div id="div_tipo" class="sigss-field sigss-flex-85">
+                    <label class="sigss-field__label obrigatorio">Alergia</label>
+                    <select id="aler" name="aler" class="sigss-chosen chzn-done" style="display: none;">
+                        <option value="">...</option>
+                    </select><div id="aler_chzn" class="chzn-container chzn-container-single" style="width: 805px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 803.4px; top: 18px;"><div class="chzn-search"><input class="chzn-input-search" id="aler_chzn_search" name="aler_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 768.8px;"></div><ul class="chzn-results"><li id="aler_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+                <input type="hidden" class="sigss-hidden sigss-negado" name="aler_isPopulate" value=""></div>
+
+                <div class="layout-row sigss-flex-4 sigss-container--horizontal">
+                    <button type="button" title="Cadastrar Alergia" id="btnCadAlergia" name="btnCadAlergia" class="btn-adicionar btn-small ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" onclick="frameManterAlergia();" style="height:25px; border-radius: 50px;margin-top: 9px;" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon ui-icon-plusthick"></span><span class="ui-button-text"></span></button>
+                </div>
+
+                <div class="layout-row sigss-flex-6 sigss-container--horizontal">
+                    <button type="button" title="Inserir" id="btnAdcionarAlergia" name="btnAdcionarAlergia" class="btn-normal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="gridAlergiaReload()" role="button" aria-disabled="false"><span class="ui-button-text">Adicionar</span></button>
+                </div>
+            </div>
+
+            <div class="sigss-field sigss-flex-91">
+                <div class="sigss-div layout-row">
+                    <input type="checkbox" id="relevante" name="relevante" class="sigss-ui-checkbox ui-helper-hidden-accessible"><span class="ui-checkbox"></span>
+                    <label for="relevante" class="ui-checkbox">Relevante</label>
+                </div>
+            </div>
+
+            <div>
+                <div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_isenAlergia" dir="ltr" style="width: 750px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_isenAlergia"></div><div class="loading ui-state-default ui-state-active" id="load_grid_isenAlergia" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_isenAlergia" style="width: 750px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 750px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:732px" role="grid" aria-labelledby="gbox_grid_isenAlergia" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_isenAlergia_id" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_id" class="ui-jqgrid-sortable">id<span class="s-ico" style=""><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_tipo" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 132px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_tipo" class="ui-jqgrid-sortable">Tipo<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_nome" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 132px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_nome" class="ui-jqgrid-sortable">Nome<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_descricao" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 219px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_descricao" class="ui-jqgrid-sortable">Descrição<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_cid" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 132px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_cid" class="ui-jqgrid-sortable">CID<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_dataCad" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_dataCad" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_usuario" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_usuario" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_btnInfoIsal" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 44px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_btnInfoIsal" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_isenAlergia_btnExcluirIsen" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 43px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_isenAlergia_btnExcluirIsen" class="ui-jqgrid-sortable"><span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 210px; width: 750px;"><div style="position:relative;"><div></div><table id="grid_isenAlergia" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="false" aria-labelledby="gbox_grid_isenAlergia" class="ui-jqgrid-btable" style="width: 732px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:132px;"></td><td role="gridcell" style="height:0px;width:132px;"></td><td role="gridcell" style="height:0px;width:219px;"></td><td role="gridcell" style="height:0px;width:132px;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:44px;"></td><td role="gridcell" style="height:0px;width:43px;"></td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_isenAlergia">&nbsp;</div><div id="grid_pager_isenAlergia" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr" style="width: 750px;"><div id="pg_grid_pager_isenAlergia" class="ui-pager-control" role="group"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table" style="width:100%;table-layout:fixed;height:100%;" role="row"><tbody><tr><td id="grid_pager_isenAlergia_left" align="left"></td><td id="grid_pager_isenAlergia_center" align="center" style="white-space: pre; width: 234px;"><table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table"><tbody><tr><td id="first_grid_pager_isenAlergia" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-first"></span></td><td id="prev_grid_pager_isenAlergia" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-prev"></span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td dir="ltr">Página <input class="ui-pg-input" type="text" size="2" maxlength="7" value="0" role="textbox"> de <span id="sp_1_grid_pager_isenAlergia">0</span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td id="next_grid_pager_isenAlergia" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-next"></span></td><td id="last_grid_pager_isenAlergia" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-end"></span></td></tr></tbody></table></td><td id="grid_pager_isenAlergia_right" align="right"><div dir="ltr" style="text-align:right" class="ui-paging-info">Nenhum registro</div></td></tr></tbody></table></div></div></div>
+                
+            </div>
+
+        </div>
+
+</div>
+
+	</div>
+
+	<div title="Opções da Classificação de Risco" id="dialog-manchester" class="sigss-oculta">
+		
+
+<div id="form-apresentacao">
+    <div class="sigss-div sigss-float-clear sigss-float-left" id="divApSuperior">
+    </div>
+    <div class="sigss-div sigss-float-clear sigss-float-left fluxograma" id="divVermelha">
+        <h3 class="sigss-float-clear blackRed border-title" align="center">EMERGENCIA</h3>
+    </div>
+
+    <div class="sigss-div sigss-float-left fluxograma" id="divLaranja">
+        <h3 class="sigss-float-clear blackLaranja border-title" align="center">MUITO URGENTE</h3>
+    </div>
+
+    <div class="sigss-div sigss-float-left fluxograma" id="divAmarela">
+        <h3 class="sigss-float-clear blackAmarelo border-title" align="center">URGENTE</h3>
+    </div>
+
+    <div class="sigss-div sigss-float-left fluxograma" id="divVerde">
+        <!--<h3 class="sigss-float-clear blackVerde border-title" align="center">POUCO URGENTE <button onclick="showInfoProtocoloPoucoUrgente()" class="btn-help" id="btnInfoVerde" type="button"></button></h3>-->
+        <h3 class="sigss-float-clear blackVerde border-title" align="center">POUCO URGENTE</h3>
+    </div>
+
+    <div id="divAzul" class="sigss-div sigss-float-left fluxograma">
+        <h3 class="sigss-float-clear blackAzul" align="center">NORMAL</h3>
+        <div style="margin-left:5px; margin-top: 5px">
+            <input id="azulNormal" class="ui-checkbox sigss-float-left azul" taxindex="32" name="azulNormal" type="checkbox">
+            <label for="azulNormal">Normal</label>
+        </div>  
+    </div>
+</div> 
+<div class="sigss-red" id="sinaisAlerta"></div>
+	</div>
+	<div title="Régua da Dor" id="dialog-dor" class="sigss-oculta">
+		
+
+<form id="form-principal">
+    <div class="sigss-float-clear sigss-float-left" id="divDorSuperior">
+        <img id="imgDor" align="middle" src="./fila_files/dorTop.png">
+        <br><br>
+    </div>
+
+    <div class="sigss-float-clear sigss-float-left" id="divSemDor">
+        <img id="imgSemDor" align="middle" src="./fila_files/semDor.png">
+    </div>
+    <div class="sigss-float-left reguaDor dorCinza" id="divSemDor">
+        <img id="img0" align="middle" src="./fila_files/dorZero.png" value="0">
+    </div>
+
+    <div id="divAzulVerde" class="sigss-float-left">
+        <div class="sigss-float-left normal dorAzul">
+            <img id="img1" align="middle" src="./fila_files/azul01.gif" value="1">
+        </div>
+        <div class="sigss-float-left normal dorAzul">
+            <img id="img2" align="middle" src="./fila_files/azul02.gif" value="2">
+        </div>
+        <div class="sigss-float-left normal dorAzul">
+            <img id="img3" align="middle" src="./fila_files/azul03.gif" value="3">
+        </div>
+        <div class="sigss-float-left normal dorAzul">
+            <img id="img4" align="middle" src="./fila_files/azul04.gif" value="4">
+        </div>
+
+        <div class="sigss-float-clear sigss-float-left normal dorVerde">
+            <img id="img5" align="middle" src="./fila_files/verde01.gif" value="1">
+        </div>
+        <div class="sigss-float-left normal dorVerde">
+            <img id="img6" align="middle" src="./fila_files/verde02.gif" value="2">
+        </div>
+        <div class="sigss-float-left normal dorVerde">
+            <img id="img7" align="middle" src="./fila_files/verde03.gif" value="3">
+        </div>
+        <div class="sigss-float-left normal dorVerde">
+            <img id="img8" align="middle" src="./fila_files/verde04.gif" value="4">
+        </div>
+    </div>
+
+    <div class="sigss-float-left reguaDor dorAmarelo">
+        <img id="img9" align="middle" src="./fila_files/amarelo01.gif" value="5">
+    </div>
+    <div class="sigss-float-left reguaDor dorAmarelo">
+        <img id="img10" align="middle" src="./fila_files/amarelo02.gif" value="6">
+    </div>
+    <div class="sigss-float-left reguaDor dorAmarelo">
+        <img id="img11" align="middle" src="./fila_files/amarelo03.gif" value="7">
+    </div>
+    <div class="sigss-float-left reguaDor dorLaranja">
+        <img id="img12" align="middle" src="./fila_files/laranja01.gif" value="8">
+    </div>
+    <div class="sigss-float-left reguaDor dorLaranja">
+        <img id="img13" align="middle" src="./fila_files/laranja02.gif" value="9">
+    </div>
+    <div class="sigss-float-left reguaDor dorLaranja">
+        <img id="img14" align="middle" src="./fila_files/laranja03.gif" value="10">
+    </div>
+    <div class="sigss-float-left">
+        <img id="img15" align="middle" src="./fila_files/dorFinal.gif">
+    </div>
+    <div id="divFinalForm" class="sigss-float-left">
+        <img id="img16" align="middle" src="./fila_files/finalForm.gif">
+    </div>
+
+    <div id="divFinalForm" class="sigss-float-left" style="margin-top: -50px;">
+        <label id="lbDescricao1"><b>Para efeitos de registro:</b></label>
+        <label id="lbDescricao2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dor intensa entre 8-10</label>
+        <label id="lbDescricao3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dor moderada entre 5-7</label>
+        <label id="lbDescricao4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dor leve entre 1-4 (esta última independente da duração)</label>
+    </div>
+
+    <div class="sigss-float-clear"></div>
+
+</form>
+	</div>
+	
+	<script type="text/javascript" src="./fila_files/planoSaudeIsen.js.download"></script>
+
+            <div title="Planos de Saúde" id="dialog-planoSaudeIsen" class="sigss-oculta" style="overflow: visible">
+                <input type="hidden" id="plsa.plsaPK.idp" name="plsa.plsaPK.idp">
+                <input type="hidden" id="plsa.plsaPK.ids" name="plsa.plsaPK.ids">
+                <input type="hidden" id="isen.isenPK.idp" name="isen.isenPK.idp">
+                <input type="hidden" id="isen.isenPK.ids" name="isen.isenPK.idp">
+                <div class="sigss-float-clear">
+                    <div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_planos_isen" dir="ltr" style="width: 470px;"><div class="ui-widget-overlay jqgrid-overlay" id="lui_grid_planos_isen"></div><div class="loading ui-state-default ui-state-active" id="load_grid_planos_isen" style="display: none;">Carregando...</div><div class="ui-jqgrid-view" id="gview_grid_planos_isen" style="width: 470px;"><div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix" style="display: none;"><a role="link" href="javascript:void(0)" class="ui-jqgrid-titlebar-close HeaderButton" style="right: 0px;"><span class="ui-icon ui-icon-circle-triangle-n"></span></a><span class="ui-jqgrid-title"></span></div><div class="ui-state-default ui-jqgrid-hdiv" style="width: 470px;"><div class="ui-jqgrid-hbox"><table class="ui-jqgrid-htable" style="width:452px" role="grid" aria-labelledby="gbox_grid_planos_isen" cellspacing="0" cellpadding="0" border="0"><thead><tr class="ui-jqgrid-labels" role="rowheader"><th id="grid_planos_isen_plsaIdp" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_planos_isen_plsaIdp" class="ui-jqgrid-sortable">plsaIdp<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_planos_isen_plsaIds" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 150px; display: none;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_planos_isen_plsaIds" class="ui-jqgrid-sortable">plsaIds<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_planos_isen_uspsCodigo" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 60px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_planos_isen_uspsCodigo" class="ui-jqgrid-sortable">Código<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_planos_isen_uspsDataValidade" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 60px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_planos_isen_uspsDataValidade" class="ui-jqgrid-sortable">Validade<span class="s-ico" style="display:none"><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-state-disabled ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th><th id="grid_planos_isen_plsaNome" role="columnheader" class="ui-state-default ui-th-column ui-th-ltr" style="width: 317px;"><span class="ui-jqgrid-resize ui-jqgrid-resize-ltr" style="cursor: col-resize;">&nbsp;</span><div id="jqgh_grid_planos_isen_plsaNome" class="ui-jqgrid-sortable">Plano de Saúde<span class="s-ico" style=""><span sort="asc" class="ui-grid-ico-sort ui-icon-asc ui-icon ui-icon-triangle-1-n ui-sort-ltr"></span><span sort="desc" class="ui-grid-ico-sort ui-icon-desc ui-state-disabled ui-icon ui-icon-triangle-1-s ui-sort-ltr"></span></span></div></th></tr></thead></table></div></div><div class="ui-jqgrid-bdiv" style="height: 260px; width: 470px;"><div style="position:relative;"><div></div><table id="grid_planos_isen" tabindex="0" cellspacing="0" cellpadding="0" border="0" role="grid" aria-multiselectable="false" aria-labelledby="gbox_grid_planos_isen" class="ui-jqgrid-btable" style="width: 452px;"><tbody><tr class="jqgfirstrow" role="row" style="height:auto"><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:150px;display:none;"></td><td role="gridcell" style="height:0px;width:60px;"></td><td role="gridcell" style="height:0px;width:60px;"></td><td role="gridcell" style="height:0px;width:317px;"></td></tr></tbody></table></div></div></div><div class="ui-jqgrid-resize-mark" id="rs_mgrid_planos_isen">&nbsp;</div><div id="grid_planos_isen_pager" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr" style="width: 470px;"><div id="pg_grid_planos_isen_pager" class="ui-pager-control" role="group"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table" style="width:100%;table-layout:fixed;height:100%;" role="row"><tbody><tr><td id="grid_planos_isen_pager_left" align="left"><table cellspacing="0" cellpadding="0" border="0" class="ui-pg-table navtable" style="float:left;table-layout:auto;"><tbody><tr></tr></tbody></table></td><td id="grid_planos_isen_pager_center" align="center" style="white-space: pre; width: 232px;"><table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table"><tbody><tr><td id="first_grid_planos_isen_pager" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-first"></span></td><td id="prev_grid_planos_isen_pager" class="ui-pg-button ui-corner-all ui-state-disabled"><span class="ui-icon ui-icon-seek-prev"></span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td dir="ltr">Página <input class="ui-pg-input" type="text" size="2" maxlength="7" value="0" role="textbox"> de <span id="sp_1_grid_planos_isen_pager">0</span></td><td class="ui-pg-button ui-state-disabled" style="width:4px;"><span class="ui-separator"></span></td><td id="next_grid_planos_isen_pager" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-next"></span></td><td id="last_grid_planos_isen_pager" class="ui-pg-button ui-corner-all"><span class="ui-icon ui-icon-seek-end"></span></td></tr></tbody></table></td><td id="grid_planos_isen_pager_right" align="right"><div dir="ltr" style="text-align:right" class="ui-paging-info">Nenhum registro</div></td></tr></tbody></table></div></div></div>
+                    
+                </div>
+            </div>
+
+	
+<link type="text/css" href="./fila_files/fluxoClassificacaoRisco.css" rel="stylesheet">
+<script type="text/javascript" src="./fila_files/fluxoClassificacaoRisco.js.download"></script>
+
+
+
+
+    <div title="Consumo Alimentar" id="coal-dialog" class="sigss-oculta" style="overflow: hidden">
+
+	<div class="sigss-float-clear">
+		<table id="grid_coal"></table>
+        <div id="grid_coal_pager"></div>
+	</div>
+
+</div>
+
+    <div title="Historico Antropometrico" id="hian-dialog" class="sigss-oculta" style="overflow: hidden">
+
+	<div class="sigss-float-clear">
+		<table id="grid_hian"></table>
+        <div id="grid_hian_pager"></div>
+	</div>
+
+</div>
+
+    <script type="text/javascript" src="./fila_files/classificacaoRisco.js.download"></script>
+
+ </div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Voltar</span></button></div></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-11" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-11" class="ui-dialog-title">Notificação do paciente</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="dialog-impact-dialog sigss-oculta dialog-custom ui-dialog-content ui-widget-content" style="display: block;"><i class="mv-basico icon">aviso</i><div id="dialog-impact-dialog" class="dialog-custom">Este usuário do serviço possui alertas de saúde.
+<span class="link">Clique aqui</span> e verifique!</div></div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Ok</span></button></div></div></div><div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-dialog-buttons" tabindex="-1" role="dialog" aria-labelledby="ui-id-12" style="display: none; outline: 0px; z-index: 1000;"><div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-12" class="ui-dialog-title">Consulta Rápida - Básica</span><a href="http://sigss.betim.mg.gov.br/sigss/atendimentoTriagemAgenda.jsp#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div id="consultaRapida-dialog" class="sigss-oculta ui-dialog-content ui-widget-content" style="display: block;">
+		
+
+<link type="text/css" href="./fila_files/consultaRapidaDialog.css" rel="stylesheet">
+<script type="text/javascript" src="./fila_files/consultaRapidaDialog.js.download"></script>
+
+<div id="div-consulta-rapida-dialog">
+    <span>
+        <input type="hidden" id="agco.agcoPK.idp" name="agco.agcoPK.idp">
+        <input type="hidden" id="agco.agcoPK.ids" name="agco.agcoPK.ids">
+    </span>
+
+    <div class="sigss-div sigss-float-clear">
+        <label class="sigss-float-left">Código: </label>
+        <span id="agco.agcoCod"></span>
+    </div>
+
+    <div id="div-classificacao-risco" class="sigss-div sigss-float-clear">
+        <label class="sigss-float-left">Classificação: </label>
+        <span id="classificacaoDialog"></span>
+    </div>
+
+    <div class="sigss-div sigss-float-left">
+        <div class="sigss-float-left">
+            <label>Data</label>
+            <input type="text" id="agco.agcoData" name="agco.agcoData" class="sigss-data sigss-calendario sigss-float-left hasDatepicker"><img class="ui-datepicker-trigger" src="./fila_files/calendar.png" alt="Exibir calendário" title="Exibir calendário">
+        </div>
+        <div class="sigss-float-left">
+            <label>Hora Prevista</label>
+            <input type="text" id="agco.agcoHoraPrevista" name="agco.agcoHoraPrevista" class="sigss-hora">
+        </div>
+    </div>
+
+    <div class="sigss-div sigss-float-clear">
+        <div class="sigss-div sigss-float-left">
+            <label id="labelUnidade">Local de Atendimento</label>
+            <select class="sigss-chosen sigss-autocomplete chzn-done sigss-negado" id="unidadeSaudeDialog.unsaPK" name="unidadeSaudeDialog.unsaPK" style="width: 572px; display: none;" disabled="disabled">
+                <option value="">...</option>
+            </select><div id="unidadeSaudeDialog_unsaPK_chzn" class="chzn-container chzn-container-single chzn-disabled" style="width: 572px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 570.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="unidadeSaudeDialog_unsaPK_chzn_search" name="unidadeSaudeDialog_unsaPK_chzn_search" type="text" maxlength="50" autocomplete="off" disabled="" style="width: 535.8px;"></div><ul class="chzn-results"><li id="unidadeSaudeDialog_unsaPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+        </div>
+    </div>
+
+    <div class="sigss-div sigss-float-clear">
+        <label>CBO (Especialidade)<i> *</i></label>
+        <select id="agco.atividadeProfissionalCnes.apcnId" name="agco.atividadeProfissionalCnes.apcnId" class="sigss-chosen chzn-done" style="width: 572px; display: none;">
+            <option value="">...</option>
+        </select><div id="agco_atividadeProfissionalCnes_apcnId_chzn" class="chzn-container chzn-container-single" style="width: 572px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 570.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="agco_atividadeProfissionalCnes_apcnId_chzn_search" name="agco_atividadeProfissionalCnes_apcnId_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 535.8px;"></div><ul class="chzn-results"><li id="agco_atividadeProfissionalCnes_apcnId_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+    <input type="hidden" class="sigss-hidden sigss-negado" name="agco_atividadeProfissionalCnes_apcnId_isPopulate" value=""></div>
+
+    <div class="sigss-div sigss-float-clear">
+        <label>Profissional<i> *</i></label>
+        <select id="agco.profissionalDestino.prsaPK" name="agco.profissionalDestino.prsaPK" class="sigss-chosen sigss-autocomplete chzn-done" style="width: 572px; display: none;">
+            <option value="">...</option>
+        </select><div id="agco_profissionalDestino_prsaPK_chzn" class="chzn-container chzn-container-single" style="width: 572px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 570.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="agco_profissionalDestino_prsaPK_chzn_search" name="agco_profissionalDestino_prsaPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 535.8px;"></div><ul class="chzn-results"><li id="agco_profissionalDestino_prsaPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+    <input type="hidden" class="sigss-hidden sigss-negado" name="agco_profissionalDestino_prsaPK_isPopulate" value=""></div>  
+
+    <div class="sigss-div sigss-float-left">
+        <label id="labelEqui">Equipe</label>
+        <select id="agco.equipe.equiPK" name="agco.equipe.equiPK" class="sigss-chosen chzn-done" style="width: 572px; display: none;">
+            <option value="">...</option>
+        </select><div id="agco_equipe_equiPK_chzn" class="chzn-container chzn-container-single" style="width: 572px;"><a href="javascript:void(0)" class="chzn-single"><span>...</span><div><b></b></div></a><div class="chzn-drop" style="left: -9000px; width: 570.4px; top: 0px;"><div class="chzn-search"><input class="chzn-input-search" id="agco_equipe_equiPK_chzn_search" name="agco_equipe_equiPK_chzn_search" type="text" maxlength="50" autocomplete="off" style="width: 535.8px;"></div><ul class="chzn-results"><li id="agco_equipe_equiPK_chzn_o_0" class="active-result result-selected" style="" title="...">...</li></ul></div></div>
+    <input type="hidden" class="sigss-hidden sigss-negado" name="agco_equipe_equiPK_isPopulate" value=""></div>
+    
+    <div id="gravadoPorDialog" class="gravado-por sigss-oculta" style="bottom: 0px !important">
+        <strong>
+            <label id="dialog-consulta-gravado-em"></label>
+        </strong>
+        <strong style="margin-left: 5px;">
+            <label id="dialog-consulta-gravado-por"></label>
+        </strong>
+    </div>
+</div>
+	</div><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Excluir</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Gravar</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Imprimir Guia</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Imprimir FAA</span></button><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Fechar</span></button></div></div></div><div class="ui-widget ui-widget-content ui-corner-all ui-jqdialog" id="alertmod_grid_planos_isen" dir="ltr" tabindex="-1" role="dialog" aria-labelledby="alerthd_grid_planos_isen" aria-hidden="true" style="width: 200px; height: auto; z-index: 1002; overflow: hidden; top: 371.5px; left: 668px;"><div class="ui-jqdialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" id="alerthd_grid_planos_isen" style="cursor: move;"><span class="ui-jqdialog-title" style="float: left;">Aviso</span><a href="javascript:void(0)" class="ui-jqdialog-titlebar-close ui-corner-all" style="right: 0.3em;"><span class="ui-icon ui-icon-closethick"></span></a></div><div class="ui-jqdialog-content ui-widget-content" id="alertcnt_grid_planos_isen"><div>Por favor, selecione um registro</div><span tabindex="0"><span tabindex="-1" id="jqg_alrt"></span></span></div><div class="jqResize ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se"></div></div></body></html>
