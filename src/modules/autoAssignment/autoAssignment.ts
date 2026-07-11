@@ -11,6 +11,7 @@ import { ConfigManager, EsfMapping } from '../../core/config';
  */
 export class AutoAssignmentModule {
   private equipeObserver: MutationObserver | null = null;
+  private patientObserver: MutationObserver | null = null;
   private lastProcessedPatientId = '';
   private isProcessingAutofill = false;
 
@@ -20,6 +21,9 @@ export class AutoAssignmentModule {
 
     // Iniciar monitoramento da tabela de equipe para reagir dinamicamente quando ela for atualizada por Ajax
     this.setupEquipeObserver();
+
+    // Iniciar monitoramento da seleção do paciente
+    this.setupPatientListener();
   }
 
   public stop() {
@@ -31,6 +35,11 @@ export class AutoAssignmentModule {
     if (this.equipeObserver) {
       this.equipeObserver.disconnect();
       this.equipeObserver = null;
+    }
+
+    if (this.patientObserver) {
+      this.patientObserver.disconnect();
+      this.patientObserver = null;
     }
   }
 
@@ -56,23 +65,116 @@ export class AutoAssignmentModule {
   }
 
   /**
+   * Monitora a alteração de seleção do paciente no Chosen e elemento nativo
+   */
+  private setupPatientListener() {
+    const patientSelect = (document.querySelector('[id="agtr.usuarioServico.isenPK"]') || 
+                           document.querySelector('[id="trie.usuarioServico.isenPK"]')) as HTMLSelectElement | null;
+    
+    if (patientSelect) {
+      patientSelect.addEventListener('change', () => {
+        console.log('SIGSS+: Evento change detectado no paciente. Aguardando equipes...');
+        this.waitForEquipeAndFill();
+      });
+    }
+
+    // Monitorar Chosen do Paciente para cliques visuais
+    const chosenSpan = document.querySelector('#agtr_usuarioServico_isenPK_chzn .chzn-single span') ||
+                       document.querySelector('#trie_usuarioServico_isenPK_chzn .chzn-single span');
+    
+    if (chosenSpan) {
+      this.patientObserver = new MutationObserver(() => {
+        console.log('SIGSS+: Nome do paciente mudou na interface do Chosen. Aguardando equipes...');
+        this.waitForEquipeAndFill();
+      });
+      this.patientObserver.observe(chosenSpan, { childList: true, characterData: true, subtree: true });
+    }
+  }
+
+  /**
+   * Laço de espera periódico para preencher assim que o AJAX do SIGSS concluir o carregamento das equipes
+   */
+  private async waitForEquipeAndFill() {
+    if (this.isProcessingAutofill) return;
+
+    const patientSelect = (document.querySelector('[id="agtr.usuarioServico.isenPK"]') || 
+                           document.querySelector('[id="trie.usuarioServico.isenPK"]')) as HTMLSelectElement | null;
+    const patientId = patientSelect?.value || '';
+
+    if (!patientId || patientId === '' || patientId === '0' || patientId === this.lastProcessedPatientId) {
+      return;
+    }
+
+    console.log(`SIGSS+: Iniciando laço de espera para paciente ${patientId}...`);
+
+    const startTime = Date.now();
+    const checkInterval = 100; // checar a cada 100ms
+    const maxWaitTime = 3000;  // aguardar no máximo 3 segundos
+
+    const checkAndFill = async () => {
+      // Checar se o paciente mudou durante a espera ou se já expirou o tempo
+      const currentSelect = (document.querySelector('[id="agtr.usuarioServico.isenPK"]') || 
+                             document.querySelector('[id="trie.usuarioServico.isenPK"]')) as HTMLSelectElement | null;
+      if (currentSelect?.value !== patientId) {
+        return;
+      }
+
+      if (Date.now() - startTime > maxWaitTime) {
+        console.warn('SIGSS+: Tempo limite de espera pelas equipes do paciente esgotado.');
+        return;
+      }
+
+      // Tentar extrair ESF do paciente
+      let esfCode = SigssAdapter.getPatientEsf();
+      
+      const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect) as HTMLSelectElement | null;
+      
+      // Se as opções do select de equipe já carregaram (mais do que apenas o '...')
+      if (equipeSelect && equipeSelect.options.length > 1) {
+        if (!esfCode) {
+          esfCode = this.detectEsfFromEquipeOptions();
+        }
+
+        if (esfCode) {
+          console.log(`SIGSS+: Equipe carregada. ESF detectado: ${esfCode}. Preenchendo...`);
+          this.lastProcessedPatientId = patientId;
+          this.isProcessingAutofill = true;
+          try {
+            await this.executeAutoFill(esfCode);
+          } catch (e) {
+            console.error('SIGSS+: Falha no autopreenchimento:', e);
+          } finally {
+            this.isProcessingAutofill = false;
+          }
+          return;
+        }
+      }
+
+      setTimeout(checkAndFill, checkInterval);
+    };
+
+    checkAndFill();
+  }
+
+  /**
    * Executa a checagem e dispara o preenchimento se detectado um novo paciente
    */
   private async checkAndTriggerAutofill() {
     if (this.isProcessingAutofill) return;
 
-    // Verificar se há paciente selecionado
-    const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') as HTMLSelectElement | null;
+    const patientSelect = (document.querySelector('[id="agtr.usuarioServico.isenPK"]') || 
+                           document.querySelector('[id="trie.usuarioServico.isenPK"]')) as HTMLSelectElement | null;
     const patientId = patientSelect?.value || '';
 
-    // Se não há paciente selecionado ou é o mesmo que acabamos de processar, ignora
     if (!patientId || patientId === '' || patientId === '0' || patientId === this.lastProcessedPatientId) {
       return;
     }
 
-    // Tenta identificar o ESF a partir das opções carregadas na Equipe
-    const esfCode = this.detectEsfFromEquipeOptions();
+    const esfCode = this.detectEsfFromEquipeOptions() || SigssAdapter.getPatientEsf();
     if (!esfCode) return;
+
+    const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect) as HTMLSelectElement | null;
+    if (!equipeSelect || equipeSelect.options.length <= 1) return;
 
     this.lastProcessedPatientId = patientId;
     this.isProcessingAutofill = true;

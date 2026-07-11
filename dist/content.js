@@ -654,11 +654,13 @@
   // src/modules/autoAssignment/autoAssignment.ts
   var AutoAssignmentModule = class {
     equipeObserver = null;
+    patientObserver = null;
     lastProcessedPatientId = "";
     isProcessingAutofill = false;
     async start() {
       this.injectCaptureButton();
       this.setupEquipeObserver();
+      this.setupPatientListener();
     }
     stop() {
       const btn = document.getElementById("sigss-plus-capture-btn");
@@ -668,6 +670,10 @@
       if (this.equipeObserver) {
         this.equipeObserver.disconnect();
         this.equipeObserver = null;
+      }
+      if (this.patientObserver) {
+        this.patientObserver.disconnect();
+        this.patientObserver = null;
       }
     }
     /**
@@ -687,17 +693,86 @@
       this.checkAndTriggerAutofill();
     }
     /**
-     * Executa a checagem e dispara o preenchimento se detectado um novo paciente
+     * Monitora a alteração de seleção do paciente no Chosen e elemento nativo
      */
-    async checkAndTriggerAutofill() {
+    setupPatientListener() {
+      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') || document.querySelector('[id="trie.usuarioServico.isenPK"]');
+      if (patientSelect) {
+        patientSelect.addEventListener("change", () => {
+          console.log("SIGSS+: Evento change detectado no paciente. Aguardando equipes...");
+          this.waitForEquipeAndFill();
+        });
+      }
+      const chosenSpan = document.querySelector("#agtr_usuarioServico_isenPK_chzn .chzn-single span") || document.querySelector("#trie_usuarioServico_isenPK_chzn .chzn-single span");
+      if (chosenSpan) {
+        this.patientObserver = new MutationObserver(() => {
+          console.log("SIGSS+: Nome do paciente mudou na interface do Chosen. Aguardando equipes...");
+          this.waitForEquipeAndFill();
+        });
+        this.patientObserver.observe(chosenSpan, { childList: true, characterData: true, subtree: true });
+      }
+    }
+    /**
+     * Laço de espera periódico para preencher assim que o AJAX do SIGSS concluir o carregamento das equipes
+     */
+    async waitForEquipeAndFill() {
       if (this.isProcessingAutofill) return;
-      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]');
+      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') || document.querySelector('[id="trie.usuarioServico.isenPK"]');
       const patientId = patientSelect?.value || "";
       if (!patientId || patientId === "" || patientId === "0" || patientId === this.lastProcessedPatientId) {
         return;
       }
-      const esfCode = this.detectEsfFromEquipeOptions();
+      console.log(`SIGSS+: Iniciando la\xE7o de espera para paciente ${patientId}...`);
+      const startTime = Date.now();
+      const checkInterval = 100;
+      const maxWaitTime = 3e3;
+      const checkAndFill = async () => {
+        const currentSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') || document.querySelector('[id="trie.usuarioServico.isenPK"]');
+        if (currentSelect?.value !== patientId) {
+          return;
+        }
+        if (Date.now() - startTime > maxWaitTime) {
+          console.warn("SIGSS+: Tempo limite de espera pelas equipes do paciente esgotado.");
+          return;
+        }
+        let esfCode = SigssAdapter.getPatientEsf();
+        const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect);
+        if (equipeSelect && equipeSelect.options.length > 1) {
+          if (!esfCode) {
+            esfCode = this.detectEsfFromEquipeOptions();
+          }
+          if (esfCode) {
+            console.log(`SIGSS+: Equipe carregada. ESF detectado: ${esfCode}. Preenchendo...`);
+            this.lastProcessedPatientId = patientId;
+            this.isProcessingAutofill = true;
+            try {
+              await this.executeAutoFill(esfCode);
+            } catch (e) {
+              console.error("SIGSS+: Falha no autopreenchimento:", e);
+            } finally {
+              this.isProcessingAutofill = false;
+            }
+            return;
+          }
+        }
+        setTimeout(checkAndFill, checkInterval);
+      };
+      checkAndFill();
+    }
+    /**
+     * Executa a checagem e dispara o preenchimento se detectado um novo paciente
+     */
+    async checkAndTriggerAutofill() {
+      if (this.isProcessingAutofill) return;
+      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') || document.querySelector('[id="trie.usuarioServico.isenPK"]');
+      const patientId = patientSelect?.value || "";
+      if (!patientId || patientId === "" || patientId === "0" || patientId === this.lastProcessedPatientId) {
+        return;
+      }
+      const esfCode = this.detectEsfFromEquipeOptions() || SigssAdapter.getPatientEsf();
       if (!esfCode) return;
+      const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect);
+      if (!equipeSelect || equipeSelect.options.length <= 1) return;
       this.lastProcessedPatientId = patientId;
       this.isProcessingAutofill = true;
       try {
@@ -812,6 +887,7 @@
     toggleBtnEl = null;
     isCollapsed = true;
     activeTab = "fila";
+    activeOfflineSubTab = "atendimento";
     patients = [];
     lastUpdate = null;
     autoRefreshTimer = null;
@@ -1172,6 +1248,54 @@
         color: #718096;
         text-align: center;
       }
+      
+      /* Fila Offline */
+      .uq-offline-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .uq-offline-table-wrapper table {
+        width: 100% !important;
+        border-collapse: collapse;
+        font-size: 10px;
+      }
+      .uq-offline-table-wrapper th {
+        background-color: #edf2f7;
+        color: #4a5568;
+        padding: 5px;
+        font-weight: bold;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+      }
+      .uq-offline-table-wrapper td {
+        padding: 6px 5px;
+        border-bottom: 1px solid #edf2f7;
+        white-space: nowrap;
+      }
+      .uq-offline-table-wrapper tr:hover {
+        background-color: #f7fafc;
+      }
+      .uq-sub-tab-btn {
+        flex: 1;
+        padding: 4px 6px;
+        font-size: 10px;
+        font-weight: bold;
+        border: 1px solid #cbd5e0;
+        border-radius: 3px;
+        cursor: pointer;
+        background-color: #edf2f7;
+        color: #4a5568;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .uq-sub-tab-btn:hover {
+        background-color: #e2e8f0;
+      }
+      .uq-sub-tab-btn.active {
+        background-color: #1a365d;
+        color: #ffffff;
+        border-color: #1a365d;
+      }
     `;
       document.head.appendChild(styleEl);
       this.sidebarEl = document.createElement("div");
@@ -1196,6 +1320,7 @@
         
         <div class="uq-tabs-row">
           <button class="uq-tab-btn ${this.currentPage !== "QUEUE" ? "hidden" : "active"}" data-tab="fila">Fila Unificada</button>
+          <button class="uq-tab-btn" data-tab="offline">Fila Offline</button>
           <button class="uq-tab-btn ${this.currentPage !== "QUEUE" ? "active" : ""}" data-tab="mapeamentos">Mapeamentos ESF</button>
           <button class="uq-tab-btn" data-tab="config">Configura\xE7\xF5es</button>
         </div>
@@ -1208,6 +1333,18 @@
         </div>
         <div class="uq-body" id="uq-panel-fila-body">
           <div class="uq-empty">Nenhum paciente na fila. Clique em Atualizar.</div>
+        </div>
+      </div>
+
+      <!-- Painel 4: Fila Offline -->
+      <div id="uq-panel-offline" class="uq-panel hidden">
+        <div class="uq-search-box" style="display: flex; gap: 5px; padding: 8px 10px; background-color: #f7fafc; border-bottom: 1px solid #e2e8f0;">
+          <button class="uq-sub-tab-btn active" data-subtab="atendimento">Atendimento</button>
+          <button class="uq-sub-tab-btn" data-subtab="acolhimento">Acolhimento</button>
+          <button class="uq-sub-tab-btn" data-subtab="fila">Fila Geral</button>
+        </div>
+        <div class="uq-body" id="uq-panel-offline-body" style="padding: 10px; overflow-x: auto;">
+          <div class="uq-empty">Carregando cache offline...</div>
         </div>
       </div>
 
@@ -1289,10 +1426,25 @@
           tabBtns.forEach((b) => b.classList.remove("active"));
           target.classList.add("active");
           this.sidebarEl?.querySelector("#uq-panel-fila")?.classList.add("hidden");
+          this.sidebarEl?.querySelector("#uq-panel-offline")?.classList.add("hidden");
           this.sidebarEl?.querySelector("#uq-panel-mapeamentos")?.classList.add("hidden");
           this.sidebarEl?.querySelector("#uq-panel-config")?.classList.add("hidden");
           this.sidebarEl?.querySelector(`#uq-panel-${tab}`)?.classList.remove("hidden");
           this.activeTab = tab;
+          if (tab === "offline") {
+            this.renderOfflineCache();
+          }
+        });
+      });
+      const subTabBtns = this.sidebarEl.querySelectorAll(".uq-sub-tab-btn");
+      subTabBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const target = e.currentTarget;
+          const subtab = target.getAttribute("data-subtab") || "atendimento";
+          subTabBtns.forEach((b) => b.classList.remove("active"));
+          target.classList.add("active");
+          this.activeOfflineSubTab = subtab;
+          this.renderOfflineCache();
         });
       });
       const searchInput = this.sidebarEl.querySelector("#uq-txt-search");
@@ -1701,6 +1853,40 @@
         </tbody>
       </table>
     `;
+    }
+    /**
+     * Carrega e renderiza o cache offline estático para Atendimento, Acolhimento ou Fila Geral
+     */
+    async renderOfflineCache() {
+      const bodyEl = document.getElementById("uq-panel-offline-body");
+      if (!bodyEl) return;
+      const cacheKey = `queueCache_${this.activeOfflineSubTab}`;
+      chrome.storage.local.get([cacheKey], (items) => {
+        const cache = items[cacheKey];
+        if (!cache || !cache.html) {
+          bodyEl.innerHTML = `<div class="uq-empty">Nenhum cache offline dispon\xEDvel para "${this.activeOfflineSubTab.toUpperCase()}".</div>`;
+          return;
+        }
+        const date = new Date(cache.timestamp);
+        const timeStr = date.toLocaleTimeString("pt-BR");
+        const dateStr = date.toLocaleDateString("pt-BR");
+        bodyEl.innerHTML = `
+        <div style="font-size: 9px; color: #718096; margin-bottom: 8px; text-align: center; font-weight: bold; background-color: #edf2f7; padding: 4px; border-radius: 3px;">
+          Fila salva em ${dateStr} \xE0s ${timeStr}
+        </div>
+        <div class="uq-offline-table-wrapper">
+          ${cache.html}
+        </div>
+      `;
+        const elList = bodyEl.querySelectorAll("a, button, input");
+        elList.forEach((el) => {
+          el.setAttribute("tabindex", "-1");
+          el.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          });
+        });
+      });
     }
   };
 
