@@ -10,23 +10,16 @@ import { ConfigManager, EsfMapping } from '../../core/config';
  * Inclui o "Modo Aprendizado" que captura as seleções efetuadas pelo usuário.
  */
 export class AutoAssignmentModule {
-  
+  private equipeObserver: MutationObserver | null = null;
+  private lastProcessedPatientId = '';
+  private isProcessingAutofill = false;
+
+
   public async start() {
-    const esfCode = SigssAdapter.getPatientEsf();
-    
-    // Injetar o botão "Capturar Configuração" independente de ter localizado o ESF,
-    // pois o usuário pode interagir. Trataremos se o ESF não existir no momento do clique.
     this.injectCaptureButton();
 
-    if (!esfCode) {
-      console.log('SIGSS+: Código ESF do paciente não encontrado nesta página.');
-      return;
-    }
-
-    console.log(`SIGSS+: Código ESF do paciente detectado: ${esfCode}`);
-
-    // Executa preenchimento automático caso haja mapeamento registrado
-    await this.executeAutoFill(esfCode);
+    // Iniciar monitoramento da tabela de equipe para reagir dinamicamente quando ela for atualizada por Ajax
+    this.setupEquipeObserver();
   }
 
   public stop() {
@@ -34,77 +27,146 @@ export class AutoAssignmentModule {
     if (btn) {
       btn.remove();
     }
+
+    if (this.equipeObserver) {
+      this.equipeObserver.disconnect();
+      this.equipeObserver = null;
+    }
   }
 
   /**
-   * Preenche de forma inteligente os dropdowns disparando eventos change sequenciais
-   * com pequenos atrasos (delays) para permitir que scripts AJAX do SIGSS respondam.
+   * Monitora alterações na lista de opções da Equipe.
+   * Quando o SIGSS atualiza as equipes (via AJAX após a seleção do paciente), reagimos imediatamente.
+   */
+  private setupEquipeObserver() {
+    const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect) as HTMLSelectElement | null;
+    if (!equipeSelect) return;
+
+    this.equipeObserver = new MutationObserver(async () => {
+      await this.checkAndTriggerAutofill();
+    });
+
+    this.equipeObserver.observe(equipeSelect, {
+      childList: true,
+      subtree: true
+    });
+
+    // Verificação imediata inicial (caso o paciente já esteja selecionado)
+    this.checkAndTriggerAutofill();
+  }
+
+  /**
+   * Executa a checagem e dispara o preenchimento se detectado um novo paciente
+   */
+  private async checkAndTriggerAutofill() {
+    if (this.isProcessingAutofill) return;
+
+    // Verificar se há paciente selecionado
+    const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]') as HTMLSelectElement | null;
+    const patientId = patientSelect?.value || '';
+
+    // Se não há paciente selecionado ou é o mesmo que acabamos de processar, ignora
+    if (!patientId || patientId === '' || patientId === '0' || patientId === this.lastProcessedPatientId) {
+      return;
+    }
+
+    // Tenta identificar o ESF a partir das opções carregadas na Equipe
+    const esfCode = this.detectEsfFromEquipeOptions();
+    if (!esfCode) return;
+
+    this.lastProcessedPatientId = patientId;
+    this.isProcessingAutofill = true;
+
+    try {
+      await this.executeAutoFill(esfCode);
+    } catch (err) {
+      console.error('SIGSS+: Falha no preenchimento automático:', err);
+    } finally {
+      this.isProcessingAutofill = false;
+    }
+  }
+
+  /**
+   * Varre as opções do select de equipe buscando por termos como "ESF 087" ou similar
+   */
+  private detectEsfFromEquipeOptions(): string | null {
+    const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect) as HTMLSelectElement | null;
+    if (!equipeSelect) return null;
+
+    const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia|INE)[:\-\s#\b]+(\d+)/i;
+
+    for (let i = 0; i < equipeSelect.options.length; i++) {
+      const text = equipeSelect.options[i].text;
+      const match = text.match(regexEsf);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Executa o autopreenchimento com delays controlados
    */
   private async executeAutoFill(esfCode: string) {
     const config = await ConfigManager.getAll();
     const mapping = config.esfMappings[esfCode];
 
     if (!mapping) {
-      console.log(`SIGSS+: Nenhum mapeamento de lançamento configurado para a Equipe ESF ${esfCode}.`);
+      console.log(`SIGSS+: Nenhum perfil salvo para a equipe ESF ${esfCode}.`);
       return;
     }
 
-    const { profissionalSelect, equipeSelect, cboSelect } = SigssAdapter.getLaunchFields();
+    console.log(`SIGSS+: Perfil localizado para ESF ${esfCode}. Preenchendo...`);
 
-    if (!profissionalSelect && !equipeSelect && !cboSelect) {
-      console.warn('SIGSS+: Nenhum campo de seleção de lançamento encontrado na página.');
-      return;
-    }
-
-    console.log(`SIGSS+: Iniciando preenchimento automático para ESF ${esfCode}...`);
-
-    // Passo 1: Preencher Profissional
+    // Passo 1: Profissional
     if (mapping.profissionalId) {
       SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.profissionalSelect, mapping.profissionalId);
     }
 
-    // Passo 2: Aguardar 300ms para preencher a Equipe
+    // Passo 2: Equipe
     setTimeout(() => {
       if (mapping.equipeId) {
         SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.equipeSelect, mapping.equipeId);
       }
 
-      // Passo 3: Aguardar mais 300ms para preencher o CBO
+      // Passo 3: CBO
       setTimeout(() => {
         if (mapping.cboId) {
           SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.cboSelect, mapping.cboId);
         }
-        console.log('SIGSS+: Lançamento preenchido automaticamente.');
+        console.log('SIGSS+: Preenchimento automático concluído com sucesso!');
       }, 300);
     }, 300);
   }
 
-
-  /**
-   * Injeta o botão de Captura e configura seu evento
-   */
   private injectCaptureButton() {
     SigssAdapter.injectCaptureButton(() => {
       this.handleCaptureConfig();
     });
   }
 
-  /**
-   * Captura as escolhas atuais do usuário e as associa à equipe ESF do paciente
-   */
   private async handleCaptureConfig() {
-    const esfCode = SigssAdapter.getPatientEsf();
+    // 1. Tentar capturar ESF das opções carregadas na Equipe (altamente confiável)
+    let esfCode = this.detectEsfFromEquipeOptions();
+    
+    // 2. Fallback para varreduras de texto no prontuário
+    if (!esfCode) {
+      esfCode = SigssAdapter.getPatientEsf();
+    }
+
     const btn = document.getElementById('sigss-plus-capture-btn') as HTMLButtonElement | null;
 
     if (!esfCode) {
-      alert('SIGSS+: Não foi possível identificar a Equipe ESF do paciente nesta tela.\nO prontuário do paciente precisa exibir o código ou nome da Equipe ESF.');
+      alert('SIGSS+: Não foi possível determinar a equipe ESF do paciente.\nVerifique se o paciente possui prontuário ativo com ESF vinculada.');
       return;
     }
 
     const { profissionalSelect, equipeSelect, cboSelect } = SigssAdapter.getLaunchFields();
 
     if (!profissionalSelect || !equipeSelect || !cboSelect) {
-      alert('SIGSS+: Os campos de seleção (Profissional, Equipe ou CBO) não foram encontrados na página.');
+      alert('SIGSS+: Campos do formulário não encontrados.');
       return;
     }
 
@@ -112,15 +174,13 @@ export class AutoAssignmentModule {
     const equipeId = equipeSelect.value;
     const cboId = cboSelect.value;
 
-    // Validação de preenchimento (evitar valores vazios, iniciais ou inválidos)
-    if (!profissionalId || profissionalId === '' || profissionalId === '0' || profissionalId === '-1' ||
-        !equipeId || equipeId === '' || equipeId === '0' || equipeId === '-1' ||
-        !cboId || cboId === '' || cboId === '0' || cboId === '-1') {
-      alert('SIGSS+: Selecione opções válidas para Profissional, Equipe e CBO antes de capturar a configuração.');
+    if (!profissionalId || profissionalId === '' || profissionalId === '0' ||
+        !equipeId || equipeId === '' || equipeId === '0' ||
+        !cboId || cboId === '' || cboId === '0') {
+      alert('SIGSS+: Selecione opções válidas para Profissional, Equipe e CBO antes de capturar.');
       return;
     }
 
-    // Obter textos descritivos das opções para exibição amigável nas opções
     const profissionalNome = profissionalSelect.options[profissionalSelect.selectedIndex]?.text.trim() || profissionalId;
     const equipeNome = equipeSelect.options[equipeSelect.selectedIndex]?.text.trim() || equipeId;
     const cboNome = cboSelect.options[cboSelect.selectedIndex]?.text.trim() || cboId;
@@ -134,17 +194,13 @@ export class AutoAssignmentModule {
       cboNome
     };
 
-    // Salvar configuração associada à equipe ESF encontrada
     await ConfigManager.saveEsfMapping(esfCode, mapping);
 
-    // Efeito de feedback visual no botão de forma discreta e elegante
     if (btn) {
       const originalText = btn.textContent;
       const originalBg = btn.style.backgroundColor;
-      const originalBorder = btn.style.borderColor;
-      const originalColor = btn.style.color;
-
-      btn.textContent = '✓ Configuração Capturada!';
+      
+      btn.textContent = `✓ ESF ${esfCode} Capturada!`;
       btn.style.backgroundColor = '#d4edda';
       btn.style.borderColor = '#c3e6cb';
       btn.style.color = '#155724';
@@ -152,9 +208,10 @@ export class AutoAssignmentModule {
       setTimeout(() => {
         btn.textContent = originalText;
         btn.style.backgroundColor = originalBg;
-        btn.style.borderColor = originalBorder;
-        btn.style.color = originalColor;
+        btn.style.borderColor = '#b5b5b5';
+        btn.style.color = '#333';
       }, 2000);
     }
   }
 }
+

@@ -48,32 +48,36 @@ export class SigssAdapter {
   static detectCurrentPage(): 'QUEUE' | 'LAUNCH' | 'UNKNOWN' {
     const url = window.location.href;
     
-    // Verificações baseadas em URL
-    if (url.includes('fila') || url.includes('pesquisa') || url.includes('consultar') || url.includes('agendamentoTriagem.jsp') || url.includes('mock_sigss.html')) {
-      if (this.getSearchButton() || document.querySelector(SIGSS_SELECTORS.queueTable)) {
-        return 'QUEUE';
-      }
+    // 1. Verificação explícita pelas páginas reais do SIGSS Betim
+    if (url.includes('atendimentoTriagemAgenda.jsp') || url.includes('mock_sigss.html')) {
+      return 'QUEUE';
     }
-    
-    if (url.includes('lancamento') || url.includes('atendimento') || url.includes('gravar') || url.includes('mock_sigss_launch.html')) {
-      const fields = this.getLaunchFields();
-      if (fields.profissionalSelect || fields.equipeSelect) {
-        return 'LAUNCH';
-      }
+    if (url.includes('agendamentoTriagem.jsp') || url.includes('mock_sigss_launch.html')) {
+      return 'LAUNCH';
     }
 
-    // Fallback estrutural
-    if (document.querySelector(SIGSS_SELECTORS.queueTable)) {
+    // 2. Fallbacks secundários baseados em palavras-chave genéricas
+    if (url.includes('fila') || url.includes('pesquisa') || url.includes('consultar')) {
       return 'QUEUE';
     }
     
-    const fieldsFallback = this.getLaunchFields();
-    if (fieldsFallback.profissionalSelect && fieldsFallback.equipeSelect) {
+    if (url.includes('lancamento') || url.includes('gravar')) {
       return 'LAUNCH';
+    }
+
+    // 3. Fallbacks de segurança baseados na estrutura do DOM
+    const fields = this.getLaunchFields();
+    if (fields.profissionalSelect && fields.equipeSelect) {
+      return 'LAUNCH';
+    }
+
+    if (document.querySelector(SIGSS_SELECTORS.queueTable)) {
+      return 'QUEUE';
     }
 
     return 'UNKNOWN';
   }
+
 
   /**
    * Obtém o elemento HTML do cabeçalho que exibe o relógio

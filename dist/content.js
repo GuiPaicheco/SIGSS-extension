@@ -26,23 +26,24 @@
      */
     static detectCurrentPage() {
       const url = window.location.href;
-      if (url.includes("fila") || url.includes("pesquisa") || url.includes("consultar") || url.includes("agendamentoTriagem.jsp") || url.includes("mock_sigss.html")) {
-        if (this.getSearchButton() || document.querySelector(SIGSS_SELECTORS.queueTable)) {
-          return "QUEUE";
-        }
+      if (url.includes("atendimentoTriagemAgenda.jsp") || url.includes("mock_sigss.html")) {
+        return "QUEUE";
       }
-      if (url.includes("lancamento") || url.includes("atendimento") || url.includes("gravar") || url.includes("mock_sigss_launch.html")) {
-        const fields = this.getLaunchFields();
-        if (fields.profissionalSelect || fields.equipeSelect) {
-          return "LAUNCH";
-        }
+      if (url.includes("agendamentoTriagem.jsp") || url.includes("mock_sigss_launch.html")) {
+        return "LAUNCH";
+      }
+      if (url.includes("fila") || url.includes("pesquisa") || url.includes("consultar")) {
+        return "QUEUE";
+      }
+      if (url.includes("lancamento") || url.includes("gravar")) {
+        return "LAUNCH";
+      }
+      const fields = this.getLaunchFields();
+      if (fields.profissionalSelect && fields.equipeSelect) {
+        return "LAUNCH";
       }
       if (document.querySelector(SIGSS_SELECTORS.queueTable)) {
         return "QUEUE";
-      }
-      const fieldsFallback = this.getLaunchFields();
-      if (fieldsFallback.profissionalSelect && fieldsFallback.equipeSelect) {
-        return "LAUNCH";
       }
       return "UNKNOWN";
     }
@@ -619,39 +620,88 @@
 
   // src/modules/autoAssignment/autoAssignment.ts
   var AutoAssignmentModule = class {
+    equipeObserver = null;
+    lastProcessedPatientId = "";
+    isProcessingAutofill = false;
     async start() {
-      const esfCode = SigssAdapter.getPatientEsf();
       this.injectCaptureButton();
-      if (!esfCode) {
-        console.log("SIGSS+: C\xF3digo ESF do paciente n\xE3o encontrado nesta p\xE1gina.");
-        return;
-      }
-      console.log(`SIGSS+: C\xF3digo ESF do paciente detectado: ${esfCode}`);
-      await this.executeAutoFill(esfCode);
+      this.setupEquipeObserver();
     }
     stop() {
       const btn = document.getElementById("sigss-plus-capture-btn");
       if (btn) {
         btn.remove();
       }
+      if (this.equipeObserver) {
+        this.equipeObserver.disconnect();
+        this.equipeObserver = null;
+      }
     }
     /**
-     * Preenche de forma inteligente os dropdowns disparando eventos change sequenciais
-     * com pequenos atrasos (delays) para permitir que scripts AJAX do SIGSS respondam.
+     * Monitora alterações na lista de opções da Equipe.
+     * Quando o SIGSS atualiza as equipes (via AJAX após a seleção do paciente), reagimos imediatamente.
+     */
+    setupEquipeObserver() {
+      const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect);
+      if (!equipeSelect) return;
+      this.equipeObserver = new MutationObserver(async () => {
+        await this.checkAndTriggerAutofill();
+      });
+      this.equipeObserver.observe(equipeSelect, {
+        childList: true,
+        subtree: true
+      });
+      this.checkAndTriggerAutofill();
+    }
+    /**
+     * Executa a checagem e dispara o preenchimento se detectado um novo paciente
+     */
+    async checkAndTriggerAutofill() {
+      if (this.isProcessingAutofill) return;
+      const patientSelect = document.querySelector('[id="agtr.usuarioServico.isenPK"]');
+      const patientId = patientSelect?.value || "";
+      if (!patientId || patientId === "" || patientId === "0" || patientId === this.lastProcessedPatientId) {
+        return;
+      }
+      const esfCode = this.detectEsfFromEquipeOptions();
+      if (!esfCode) return;
+      this.lastProcessedPatientId = patientId;
+      this.isProcessingAutofill = true;
+      try {
+        await this.executeAutoFill(esfCode);
+      } catch (err) {
+        console.error("SIGSS+: Falha no preenchimento autom\xE1tico:", err);
+      } finally {
+        this.isProcessingAutofill = false;
+      }
+    }
+    /**
+     * Varre as opções do select de equipe buscando por termos como "ESF 087" ou similar
+     */
+    detectEsfFromEquipeOptions() {
+      const equipeSelect = document.querySelector(SIGSS_SELECTORS.equipeSelect);
+      if (!equipeSelect) return null;
+      const regexEsf = /(?:ESF|Equipe(?:\s+ESF)?|Sa\u00fade\s+da\s+Fam\u00edlia|INE)[:\-\s#\b]+(\d+)/i;
+      for (let i = 0; i < equipeSelect.options.length; i++) {
+        const text = equipeSelect.options[i].text;
+        const match = text.match(regexEsf);
+        if (match && match[1]) {
+          return match[1].trim();
+        }
+      }
+      return null;
+    }
+    /**
+     * Executa o autopreenchimento com delays controlados
      */
     async executeAutoFill(esfCode) {
       const config = await ConfigManager.getAll();
       const mapping = config.esfMappings[esfCode];
       if (!mapping) {
-        console.log(`SIGSS+: Nenhum mapeamento de lan\xE7amento configurado para a Equipe ESF ${esfCode}.`);
+        console.log(`SIGSS+: Nenhum perfil salvo para a equipe ESF ${esfCode}.`);
         return;
       }
-      const { profissionalSelect, equipeSelect, cboSelect } = SigssAdapter.getLaunchFields();
-      if (!profissionalSelect && !equipeSelect && !cboSelect) {
-        console.warn("SIGSS+: Nenhum campo de sele\xE7\xE3o de lan\xE7amento encontrado na p\xE1gina.");
-        return;
-      }
-      console.log(`SIGSS+: Iniciando preenchimento autom\xE1tico para ESF ${esfCode}...`);
+      console.log(`SIGSS+: Perfil localizado para ESF ${esfCode}. Preenchendo...`);
       if (mapping.profissionalId) {
         SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.profissionalSelect, mapping.profissionalId);
       }
@@ -663,38 +713,35 @@
           if (mapping.cboId) {
             SigssAdapter.setSelectValueAndTrigger(SIGSS_SELECTORS.cboSelect, mapping.cboId);
           }
-          console.log("SIGSS+: Lan\xE7amento preenchido automaticamente.");
+          console.log("SIGSS+: Preenchimento autom\xE1tico conclu\xEDdo com sucesso!");
         }, 300);
       }, 300);
     }
-    /**
-     * Injeta o botão de Captura e configura seu evento
-     */
     injectCaptureButton() {
       SigssAdapter.injectCaptureButton(() => {
         this.handleCaptureConfig();
       });
     }
-    /**
-     * Captura as escolhas atuais do usuário e as associa à equipe ESF do paciente
-     */
     async handleCaptureConfig() {
-      const esfCode = SigssAdapter.getPatientEsf();
+      let esfCode = this.detectEsfFromEquipeOptions();
+      if (!esfCode) {
+        esfCode = SigssAdapter.getPatientEsf();
+      }
       const btn = document.getElementById("sigss-plus-capture-btn");
       if (!esfCode) {
-        alert("SIGSS+: N\xE3o foi poss\xEDvel identificar a Equipe ESF do paciente nesta tela.\nO prontu\xE1rio do paciente precisa exibir o c\xF3digo ou nome da Equipe ESF.");
+        alert("SIGSS+: N\xE3o foi poss\xEDvel determinar a equipe ESF do paciente.\nVerifique se o paciente possui prontu\xE1rio ativo com ESF vinculada.");
         return;
       }
       const { profissionalSelect, equipeSelect, cboSelect } = SigssAdapter.getLaunchFields();
       if (!profissionalSelect || !equipeSelect || !cboSelect) {
-        alert("SIGSS+: Os campos de sele\xE7\xE3o (Profissional, Equipe ou CBO) n\xE3o foram encontrados na p\xE1gina.");
+        alert("SIGSS+: Campos do formul\xE1rio n\xE3o encontrados.");
         return;
       }
       const profissionalId = profissionalSelect.value;
       const equipeId = equipeSelect.value;
       const cboId = cboSelect.value;
-      if (!profissionalId || profissionalId === "" || profissionalId === "0" || profissionalId === "-1" || !equipeId || equipeId === "" || equipeId === "0" || equipeId === "-1" || !cboId || cboId === "" || cboId === "0" || cboId === "-1") {
-        alert("SIGSS+: Selecione op\xE7\xF5es v\xE1lidas para Profissional, Equipe e CBO antes de capturar a configura\xE7\xE3o.");
+      if (!profissionalId || profissionalId === "" || profissionalId === "0" || !equipeId || equipeId === "" || equipeId === "0" || !cboId || cboId === "" || cboId === "0") {
+        alert("SIGSS+: Selecione op\xE7\xF5es v\xE1lidas para Profissional, Equipe e CBO antes de capturar.");
         return;
       }
       const profissionalNome = profissionalSelect.options[profissionalSelect.selectedIndex]?.text.trim() || profissionalId;
@@ -712,17 +759,15 @@
       if (btn) {
         const originalText = btn.textContent;
         const originalBg = btn.style.backgroundColor;
-        const originalBorder = btn.style.borderColor;
-        const originalColor = btn.style.color;
-        btn.textContent = "\u2713 Configura\xE7\xE3o Capturada!";
+        btn.textContent = `\u2713 ESF ${esfCode} Capturada!`;
         btn.style.backgroundColor = "#d4edda";
         btn.style.borderColor = "#c3e6cb";
         btn.style.color = "#155724";
         setTimeout(() => {
           btn.textContent = originalText;
           btn.style.backgroundColor = originalBg;
-          btn.style.borderColor = originalBorder;
-          btn.style.color = originalColor;
+          btn.style.borderColor = "#b5b5b5";
+          btn.style.color = "#333";
         }, 2e3);
       }
     }
