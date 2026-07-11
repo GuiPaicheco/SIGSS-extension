@@ -1,0 +1,282 @@
+/* Estilos do Popup SIGSS+ */
+body {
+  width: 320px;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  background-color: #f8fafc;
+  color: #334155;
+  box-sizing: border-box;
+}
+
+/* Cabeçalho */
+.popup-header {
+  background-color: #1e3a8a; /* Azul Escuro */
+  color: white;
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px solid #1d4ed8;
+}
+
+.popup-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.popup-subtitle {
+  font-size: 10px;
+  color: #93c5fd;
+  margin-top: 2px;
+  font-weight: normal;
+}
+
+/* Abas (Tabs) */
+.popup-tabs {
+  display: flex;
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: bold;
+  color: #64748b;
+  cursor: pointer;
+  outline: none;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  color: #1e3a8a;
+  background-color: #e2e8f0;
+}
+
+.tab-btn.active {
+  color: #1e3a8a;
+  border-bottom-color: #1e3a8a;
+  background-color: #ffffff;
+}
+
+/* Conteúdo Principal */
+.popup-content {
+  padding: 15px;
+  min-height: 180px;
+  background-color: #ffffff;
+}
+
+.tab-panel.hidden {
+  display: none !important;
+}
+
+/* Grupos de Formulário */
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 5px;
+  font-size: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  color: #334155;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.form-select:focus {
+  border-color: #3b82f6;
+}
+
+/* Checkbox */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+/* Botões */
+.btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #2b6cb0;
+  color: white;
+  border-color: #2b6cb0;
+}
+
+.btn-primary:hover {
+  background-color: #2c5282;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.action-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 15px 0;
+}
+
+/* Listagem de Mapeamento */
+.mapping-info {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.mappings-list {
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+}
+
+.mapping-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mapping-item:last-child {
+  border-bottom: none;
+}
+
+.mapping-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 85%;
+}
+
+.mapping-item-title {
+  font-weight: bold;
+  font-size: 12px;
+  color: #1e293b;
+}
+
+.mapping-item-sub {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapping-item-delete {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.mapping-item-delete:hover {
+  color: #b91c1c;
+}
+
+.no-mappings {
+  padding: 20px 10px;
+  text-align: center;
+  font-size: 11px;
+  color: #94a3b8;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Tela Sobre */
+.about-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about-card h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #1e3a8a;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.about-card .version {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: normal;
+}
+
+.about-text {
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.about-meta {
+  font-size: 11px;
+  background-color: #f1f5f9;
+  padding: 8px 10px;
+  border-radius: 3px;
+  border-left: 3px solid #1e3a8a;
+  line-height: 1.4;
+}
+
+.about-purpose {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #475569;
+  font-style: italic;
+}
+
+.about-contact {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 5px;
+}

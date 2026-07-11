@@ -1,0 +1,23 @@
+{
+  "name": "sigss-plus",
+  "version": "1.0.0",
+  "description": "Extensão Chrome de produtividade para o SIGSS Betim",
+  "main": "dist/content.js",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "zip": "powershell Compress-Archive -Path dist/* -DestinationPath sigss-plus.zip -Force"
+  },
+  "keywords": [
+    "sigss",
+    "chrome-extension",
+    "productivity"
+  ],
+  "author": "Guilherme Paicheco Ferreira",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "esbuild": "^0.21.5",
+    "typescript": "^5.4.5"
+  }
+}

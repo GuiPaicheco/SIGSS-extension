@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGSS - Fila de Solicitações (Mockup)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f3f3f3; }
+    .header { background: #004d80; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { margin: 0; font-size: 18px; }
+    .relogio { font-weight: bold; font-size: 14px; background: #002d4d; padding: 5px 10px; border-radius: 3px; }
+    .container { background: white; padding: 20px; margin-top: 15px; border: 1px solid #ccc; }
+    .search-bar { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+    .btn { padding: 6px 12px; background: #e0e0e0; border: 1px solid #999; cursor: pointer; font-weight: bold; }
+    .btn:hover { background: #d0d0d0; }
+    table.grid { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table.grid th, table.grid td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    table.grid th { background: #f0f0f0; cursor: pointer; }
+    table.grid th:hover { background: #e0e0e0; }
+    .counter-info { margin-top: 10px; font-size: 12px; color: #555; font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>SIGSS - Sistema de Informação e Gestão de Serviços de Saúde</h1>
+    <!-- O relógio exibirá inicialmente o horário incorreto para que possamos testar a substituição -->
+    <div id="relogio" class="relogio">12:34:56 (Incorreto)</div>
+  </div>
+
+  <div class="container">
+    <h2>Fila de Solicitações da Unidade</h2>
+    
+    <div class="search-bar">
+      <label>Filtro Paciente: <input type="text" id="filtro-paciente"></label>
+      <input type="button" id="btnBuscar" value="Buscar" class="btn">
+      <div id="search-counter" class="counter-info">Cliques no botão Buscar: 0</div>
+    </div>
+
+    <table class="grid" id="tabelaFila">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Procedimento</th>
+          <th>Data Solicitação</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Carlos Silva</td>
+          <td>Consulta Médica Clinico Geral</td>
+          <td>10/07/2026 09:15:30</td>
+          <td>Aguardando</td>
+        </tr>
+        <tr>
+          <td>Ana Souza</td>
+          <td>Atendimento Odontológico</td>
+          <td>10/07/2026 08:30:15</td>
+          <td>Aguardando</td>
+        </tr>
+        <tr>
+          <td>Mariano Santos</td>
+          <td>Consulta de Enfermagem</td>
+          <td>10/07/2026 10:45:00</td>
+          <td>Aguardando</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Contador de cliques para provar que a extensão clica no botão "Buscar" no tempo correto
+    let clickCount = 0;
+    const btn = document.getElementById('btnBuscar');
+    const counterDisplay = document.getElementById('search-counter');
+    
+    btn.addEventListener('click', () => {
+      clickCount++;
+      counterDisplay.textContent = 'Cliques no botão Buscar: ' + clickCount + ' (Último clique: ' + new Date().toLocaleTimeString() + ')';
+    });
+
+    // Simulação rudimentar de ordenação ao clicar no cabeçalho
+    const headers = document.querySelectorAll('table.grid th');
+    headers.forEach(header => {
+      header.addEventListener('click', () => {
+        if (header.textContent.includes('Data Solicitação')) {
+          header.innerHTML = 'Data Solicitação ▲';
+          header.classList.add('sorted');
+          console.log('Fila ordenada por Data Solicitação.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

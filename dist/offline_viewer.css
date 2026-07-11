@@ -1,0 +1,194 @@
+/* Estilos Globais */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f6f8;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Cabeçalho */
+.header {
+  background-color: #1a365d; /* Azul Escuro Corporativo */
+  color: #ffffff;
+  padding: 12px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.logo-badge {
+  background-color: #e53e3e; /* Vermelho Aviso */
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.info-area {
+  font-size: 13px;
+  color: #ebf8ff;
+  font-style: italic;
+}
+
+/* Botões */
+.btn {
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary {
+  background-color: #4a5568;
+  color: white;
+  border-color: #4a5568;
+}
+
+.btn-secondary:hover {
+  background-color: #2d3748;
+}
+
+/* Conteúdo Principal */
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Banner de Alerta */
+.alert-banner {
+  background-color: #e2e8f0;
+  border-left: 4px solid #4a5568;
+  color: #2d3748;
+  padding: 10px 15px;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-icon {
+  font-size: 18px;
+}
+
+.alert-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Mensagem Sem Cache */
+.no-cache-card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 40px 20px;
+  text-align: center;
+  max-width: 500px;
+  margin: 50px auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.no-cache-card h2 {
+  color: #2b6cb0;
+  margin-top: 0;
+}
+
+.no-cache-card p {
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.no-cache-card .subtext {
+  color: #718096;
+  font-size: 12px;
+  margin-top: 15px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Container de Tabela */
+.table-container {
+  background-color: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  padding: 15px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Estilo para neutralizar cliques na tabela offline */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  pointer-events: none; /* Desativa qualquer clique nos links ou botões internos */
+  user-select: text;    /* Permite que o usuário selecione e copie textos */
+}
+
+/* Sobrescrever possíveis estilos da tabela original do SIGSS para garantir legibilidade */
+.table-container table th {
+  background-color: #ebf8ff;
+  color: #2b6cb0;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid #bee3f8;
+  font-weight: bold;
+}
+
+.table-container table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #2d3748;
+}
+
+.table-container table tr:nth-child(even) {
+  background-color: #f7fafc;
+}
+
+.table-container table tr:hover {
+  background-color: #edf2f7;
+}
+
+/* Rodapé */
+.footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 11px;
+  color: #718096;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 30px;
+  background-color: #edf2f7;
+}

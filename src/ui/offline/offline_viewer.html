@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGSS+ - Última Fila Salva (Offline)</title>
+  <link rel="stylesheet" href="offline_viewer.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-area">
+        <span class="logo-title">SIGSS+</span>
+        <span class="logo-badge">MODO OFFLINE</span>
+      </div>
+      <div class="info-area">
+        <span id="cache-timestamp">Carregando informações do cache...</span>
+      </div>
+      <div class="actions-area">
+        <button id="btn-close" class="btn btn-secondary">Fechar Consulta</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="alert-banner">
+      <span class="alert-icon">ℹ</span>
+      <p class="alert-text">
+        Esta é uma visualização estática da última fila de atendimento capturada.
+        Este cache serve apenas para <strong>consulta</strong> e <strong>não permite edição</strong> de dados.
+      </p>
+    </div>
+
+    <div id="no-cache-message" class="no-cache-card hidden">
+      <h2>Nenhum cache encontrado</h2>
+      <p>Não há nenhuma fila salva localmente ainda.</p>
+      <p class="subtext">A fila é salva de forma automática em segundo plano sempre que você atualiza ou visualiza a lista no portal do SIGSS.</p>
+    </div>
+
+    <div id="table-container" class="table-container">
+      <!-- O HTML da tabela capturada será injetado aqui -->
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>SIGSS+ • Desenvolvido voluntariamente por Guilherme Paicheco Ferreira • Betim/MG</p>
+  </footer>
+
+  <script src="offline_viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SIGSS - Lançamento de Procedimento (Mockup)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f3f3f3; }
+    .header { background: #004d80; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { margin: 0; font-size: 18px; }
+    .relogio { font-weight: bold; font-size: 14px; background: #002d4d; padding: 5px 10px; border-radius: 3px; }
+    .container { background: white; padding: 20px; margin-top: 15px; border: 1px solid #ccc; }
+    .patient-card { background: #eef7ff; padding: 10px 15px; border-left: 4px solid #3182ce; margin-bottom: 20px; font-size: 13px; }
+    .patient-card td { padding: 4px 10px; }
+    .form-table { width: 100%; border-collapse: collapse; }
+    .form-table td { padding: 8px 5px; }
+    .form-label { font-weight: bold; font-size: 12px; }
+    select { width: 100%; padding: 5px; max-width: 400px; }
+    .barra-botoes { background: #f9f9f9; padding: 10px; border-top: 1px solid #ccc; margin-top: 20px; display: flex; gap: 10px; }
+    .btn { padding: 5px 15px; font-weight: bold; cursor: pointer; }
+    .btn-submit { background: #008080; color: white; border: 1px solid #006666; }
+    .log-panel { margin-top: 20px; background: #222; color: #0f0; padding: 10px; font-family: monospace; font-size: 11px; height: 100px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>SIGSS - Registrar Atendimento</h1>
+    <div id="relogio" class="relogio">12:34:56 (Incorreto)</div>
+  </div>
+
+  <div class="container">
+    <h2>Lançamento Ambulatorial</h2>
+
+    <div class="patient-card">
+      <table style="width: 100%;">
+        <tr>
+          <td><strong>Paciente:</strong> João da Silva Sauro</td>
+          <td><strong>CNS:</strong> 700123456789012</td>
+        </tr>
+        <tr>
+          <td><strong>Nascimento:</strong> 01/01/1980</td>
+          <!-- Código ESF do paciente para teste de automação -->
+          <td><strong>Equipe ESF:</strong> <span class="esf-paciente">086</span></td>
+        </tr>
+      </table>
+    </div>
+
+    <form id="form-lancamento">
+      <table class="form-table">
+        <tr>
+          <td class="form-label" style="width: 120px;">Profissional:</td>
+          <td>
+            <select name="cd_profissional" id="cd_profissional">
+              <option value="0">-- Selecione um Profissional --</option>
+              <option value="2438">Dr. João Silva (Médico da Família)</option>
+              <option value="9999">Dra. Maria Oliveira (Dentista)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="form-label">Equipe:</td>
+          <td>
+            <select name="cd_equipe" id="cd_equipe">
+              <option value="0">-- Selecione uma Equipe --</option>
+              <!-- Populado dinamicamente no sistema real, colocamos estático para teste -->
+              <option value="130">Equipe Saúde da Família 130</option>
+              <option value="888">Equipe Saúde da Família 888</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="form-label">CBO:</td>
+          <td>
+            <select name="cd_cbo" id="cd_cbo">
+              <option value="0">-- Selecione a Ocupação (CBO) --</option>
+              <option value="2582">225142 - Medico da Estrategia de Saude da Familia</option>
+              <option value="3333">223208 - Cirurgião-Dentista da E.S.F.</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <div class="barra-botoes" id="divBotoes">
+        <input type="submit" value="Gravar Lançamento" class="btn btn-submit" onclick="alert('Lançamento Gravado!'); return false;">
+        <input type="button" value="Voltar" class="btn">
+      </div>
+    </form>
+
+    <div class="log-panel" id="log-panel">
+      <div>[Console de Eventos]</div>
+    </div>
+  </div>
+
+  <script>
+    const logPanel = document.getElementById('log-panel');
+    function logEvent(msg) {
+      const div = document.createElement('div');
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logPanel.appendChild(div);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    // Monitorar eventos change para demonstrar que a extensão dispara
+    document.getElementById('cd_profissional').addEventListener('change', (e) => {
+      logEvent(`Change disparado em Profissional. Valor selecionado: ${e.target.value}`);
+      
+      // Simular atualização de cascata (Equipe é selecionável após Profissional)
+      if (e.target.value === '2438') {
+        logEvent('Simulando carregamento de Equipes de João Silva...');
+      }
+    });
+
+    document.getElementById('cd_equipe').addEventListener('change', (e) => {
+      logEvent(`Change disparado em Equipe. Valor selecionado: ${e.target.value}`);
+    });
+
+    document.getElementById('cd_cbo').addEventListener('change', (e) => {
+      logEvent(`Change disparado em CBO. Valor selecionado: ${e.target.value}`);
+    });
+  </script>
+</body>
+</html>
