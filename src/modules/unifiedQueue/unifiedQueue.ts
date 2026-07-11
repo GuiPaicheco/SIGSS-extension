@@ -869,13 +869,38 @@ export class UnifiedQueueModule {
           }
 
           const prof = professionals[index];
-          const requestData = { ...postData };
           
-          // Ajustar nome do parâmetro dependendo da tela
+          // Clonar e avaliar as propriedades do postData (incluindo funções)
+          const requestData = {};
+          for (const key in postData) {
+            let val = postData[key];
+            if (typeof val === 'function') {
+              val = val(); // Avaliar a função para extrair o valor atualizado
+            }
+            
+            // Se o valor contiver o filtro do profissional, atualiza para o atual do loop
+            if (typeof val === 'string' && val.indexOf('prsaPK:') !== -1) {
+              // Tratar se for formato de filtro array "prsaPK:ID" ou "filtro=prsaPK:ID"
+              const parts = val.split(':');
+              if (parts.length === 2 && parts[0] === 'prsaPK') {
+                requestData[key] = 'prsaPK:' + prof.id;
+              } else {
+                requestData[key] = val.replace(/prsaPK:[^,;&]*/, 'prsaPK:' + prof.id);
+              }
+            } else {
+              requestData[key] = val;
+            }
+          }
+          
+          // Ajustar campos diretos de profissional
           if (requestData['profissional.prsaPK'] !== undefined) {
             requestData['profissional.prsaPK'] = prof.id;
-          } else {
+          }
+          if (requestData['agtr.profissional.prsaPK'] !== undefined) {
             requestData['agtr.profissional.prsaPK'] = prof.id;
+          }
+          if (requestData['prsaPK'] !== undefined) {
+            requestData['prsaPK'] = prof.id;
           }
 
           window.jQuery.ajax({

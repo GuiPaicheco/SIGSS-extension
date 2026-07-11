@@ -1661,13 +1661,38 @@
           }
 
           const prof = professionals[index];
-          const requestData = { ...postData };
           
-          // Ajustar nome do par\xE2metro dependendo da tela
+          // Clonar e avaliar as propriedades do postData (incluindo fun\xE7\xF5es)
+          const requestData = {};
+          for (const key in postData) {
+            let val = postData[key];
+            if (typeof val === 'function') {
+              val = val(); // Avaliar a fun\xE7\xE3o para extrair o valor atualizado
+            }
+            
+            // Se o valor contiver o filtro do profissional, atualiza para o atual do loop
+            if (typeof val === 'string' && val.indexOf('prsaPK:') !== -1) {
+              // Tratar se for formato de filtro array "prsaPK:ID" ou "filtro=prsaPK:ID"
+              const parts = val.split(':');
+              if (parts.length === 2 && parts[0] === 'prsaPK') {
+                requestData[key] = 'prsaPK:' + prof.id;
+              } else {
+                requestData[key] = val.replace(/prsaPK:[^,;&]*/, 'prsaPK:' + prof.id);
+              }
+            } else {
+              requestData[key] = val;
+            }
+          }
+          
+          // Ajustar campos diretos de profissional
           if (requestData['profissional.prsaPK'] !== undefined) {
             requestData['profissional.prsaPK'] = prof.id;
-          } else {
+          }
+          if (requestData['agtr.profissional.prsaPK'] !== undefined) {
             requestData['agtr.profissional.prsaPK'] = prof.id;
+          }
+          if (requestData['prsaPK'] !== undefined) {
+            requestData['prsaPK'] = prof.id;
           }
 
           window.jQuery.ajax({
@@ -1898,7 +1923,28 @@
     autoAssignmentModule = new AutoAssignmentModule();
     unifiedQueueModule = new UnifiedQueueModule();
     currentPage = "UNKNOWN";
+    isRunning = false;
+    constructor() {
+      chrome.storage.onChanged.addListener(async (changes) => {
+        if (changes.extensionEnabled) {
+          const enabled = changes.extensionEnabled.newValue;
+          console.log(`SIGSS+: Estado ativo alterado para: ${enabled}`);
+          if (enabled) {
+            await this.init();
+          } else {
+            this.stop();
+          }
+        }
+      });
+    }
     async init() {
+      const items = await chrome.storage.local.get({ extensionEnabled: true });
+      if (!items.extensionEnabled) {
+        this.stop();
+        return;
+      }
+      if (this.isRunning) return;
+      this.isRunning = true;
       console.log("SIGSS+: Inicializando extens\xE3o...");
       if (SigssAdapter.getClockElement()) {
         this.clockModule.start();
@@ -1924,12 +1970,23 @@
       }
       this.setupConfigListener();
     }
+    stop() {
+      if (!this.isRunning) return;
+      this.isRunning = false;
+      console.log("SIGSS+: Desativando todos os m\xF3dulos ativos do SIGSS+...");
+      this.clockModule.stop();
+      this.autoRefreshModule.stop();
+      this.queueCacheModule.stop();
+      this.autoAssignmentModule.stop();
+      this.unifiedQueueModule.stop();
+    }
     /**
      * Monitora alterações de configuração enviadas via popup ou opções.
      * Reinicia módulos relacionados em tempo real sem precisar recarregar a página.
      */
     setupConfigListener() {
       ConfigManager.onChange(async (changes) => {
+        if (!this.isRunning) return;
         const hasRefreshChanges = changes.refreshInterval || changes.refreshOnlyActive || changes.preventRefreshOnForm || changes.sortDataSolicitacao;
         if (hasRefreshChanges && this.currentPage === "QUEUE") {
           console.log("SIGSS+: Configura\xE7\xF5es de atualiza\xE7\xE3o alteradas. Reiniciando m\xF3dulo...");

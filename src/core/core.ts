@@ -21,8 +21,33 @@ class SIGSSPlusCore {
   private unifiedQueueModule = new UnifiedQueueModule();
 
   private currentPage: 'QUEUE' | 'LAUNCH' | 'UNKNOWN' = 'UNKNOWN';
+  private isRunning = false;
+
+  constructor() {
+    // Ouvir alterações globais de ativação em tempo real
+    chrome.storage.onChanged.addListener(async (changes) => {
+      if (changes.extensionEnabled) {
+        const enabled = changes.extensionEnabled.newValue;
+        console.log(`SIGSS+: Estado ativo alterado para: ${enabled}`);
+        if (enabled) {
+          await this.init();
+        } else {
+          this.stop();
+        }
+      }
+    });
+  }
 
   public async init() {
+    const items = await chrome.storage.local.get({ extensionEnabled: true });
+    if (!items.extensionEnabled) {
+      this.stop();
+      return;
+    }
+
+    if (this.isRunning) return;
+    this.isRunning = true;
+
     console.log('SIGSS+: Inicializando extensão...');
 
     // O relógio é iniciado em qualquer página que possua o elemento de cabeçalho
@@ -54,10 +79,20 @@ class SIGSSPlusCore {
         break;
     }
 
-
-
     // Registrar observador de mudanças nas configurações para refletir imediatamente
     this.setupConfigListener();
+  }
+
+  public stop() {
+    if (!this.isRunning) return;
+    this.isRunning = false;
+
+    console.log('SIGSS+: Desativando todos os módulos ativos do SIGSS+...');
+    this.clockModule.stop();
+    this.autoRefreshModule.stop();
+    this.queueCacheModule.stop();
+    this.autoAssignmentModule.stop();
+    this.unifiedQueueModule.stop();
   }
 
   /**
@@ -66,6 +101,8 @@ class SIGSSPlusCore {
    */
   private setupConfigListener() {
     ConfigManager.onChange(async (changes) => {
+      if (!this.isRunning) return;
+
       // Se alterou alguma opção de atualização
       const hasRefreshChanges = 
         changes.refreshInterval || 

@@ -67,6 +67,61 @@
     .btn:hover {
       background-color: #2b6cb0;
     }
+    
+    /* Estilos do Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e0;
+      transition: .3s;
+      border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #48bb78;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .toggle-label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #4a5568;
+    }
   </style>
 </head>
 <body>
@@ -83,7 +138,15 @@
       Deslize a aba flutuante no lado direito da página para gerenciar mapeamentos e configurações.
     </p>
 
-    <button id="btn-offline" class="btn">Visualizar Fila Offline</button>
+    <button id="btn-access" class="btn">Acessar SIGSS</button>
+
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="chk-enabled" checked>
+        <span class="slider"></span>
+      </label>
+      <span class="toggle-label" id="lbl-status">Extensão Ativa</span>
+    </div>
   </main>
 </body>
 </html>
